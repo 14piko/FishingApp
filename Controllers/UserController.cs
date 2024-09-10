@@ -47,13 +47,13 @@ namespace CSHARP_FishingApp.Controllers
                 return NotFound(new { message = "User not found." });
             }
 
-            db.password = user.password;
-            db.email = user.email;
-            db.first_name = user.first_name;
-            db.last_name = user.last_name;
-            db.role = user.role;
-            db.oib = user.role;
-            db.license_number = user.license_number;
+            db.Password = user.Password;
+            db.Email = user.Email;
+            db.FirstName = user.FirstName;
+            db.LastName = user.LastName;
+            db.Role = user.Role;
+            db.Oib = user.Oib;
+            db.LicenseNumber = user.LicenseNumber;
 
 
             _context.User.Update(db);
