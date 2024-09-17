@@ -10,6 +10,17 @@ async function get() {
         });
 }
 
+async function deleteUser(userId) {
+    return await HttpService.delete('/User/' + userId)
+    .then((response) => {
+        return {error: false, message: response.data.message}
+    })
+    .catch((e) => {
+        return {error: true, message: 'User cannot be deleted!'}
+    })
+}
+
 export default {
     get,
+    deleteUser
 };

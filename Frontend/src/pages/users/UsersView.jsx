@@ -22,12 +22,21 @@ export default function UsersView(){
         getUsers();
     },[]);
 
+    async function deleteAsync(userId) {
+        const response = awaitUserService.deleteUser(userId);
+        if(response.error){
+            alert(response.message);
+            return;
+        }
+        getUsers();
+    }
+
     const handleEdit = (userId) => {
         console.log(`Edit user with id: ${userId}`);
     };
 
-    const handleDelete = (userId) => {
-        console.log(`Delete user with id: ${userId}`);
+    function handleDelete(userId) {
+        deleteAsync(userId);
     };
 
 
