@@ -1,6 +1,7 @@
 ﻿using CSHARP_FishingApp.Data;
 using CSHARP_FishingApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace CSHARP_FishingApp.Controllers
 {
@@ -14,6 +15,35 @@ namespace CSHARP_FishingApp.Controllers
             _context = context;
         }
 
+        private bool IsValidOib(string oib)
+        {
+            if (oib.Length != 11 || !oib.All(char.IsDigit))
+            {
+                return false;
+            }
+
+            int[] digits = oib.Select(d => int.Parse(d.ToString())).ToArray();
+
+            int factor = 10;
+            for (int i = 0; i < 10; i++)
+            {
+                factor = factor + digits[i];
+                factor = factor % 10;
+                if (factor == 0)
+                    factor = 10;
+                factor *= 2;
+                factor = factor % 11;
+            }
+
+            int controlDigit = 11 - factor;
+            if (controlDigit == 10)
+            {
+                controlDigit = 0;
+            }
+
+            return controlDigit == digits[10];
+        }
+
         [HttpGet]
         public IActionResult Get()
         {
@@ -24,12 +54,28 @@ namespace CSHARP_FishingApp.Controllers
         [Route("{id:int}")]
         public IActionResult GetById(int id)
         {
-            return Ok(_context.User.Find(id));
+            var user = _context.User.Find(id);
+            if (user == null)
+            {
+                return NotFound(new { message = "User not found." });
+            }
+            return Ok(user);
         }
 
         [HttpPost]
         public IActionResult Post(User user)
         {
+            if (!IsValidOib(user.Oib))
+            {
+                return BadRequest(new { message = "Invalid OIB." });
+            }
+
+            var existingUser = _context.User.FirstOrDefault(u => u.Oib == user.Oib);
+            if (existingUser != null)
+            {
+                return Conflict(new { message = "User with this OIB already exists." });
+            }
+
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
 
             _context.User.Add(user);
@@ -49,6 +95,17 @@ namespace CSHARP_FishingApp.Controllers
                 return NotFound(new { message = "User not found." });
             }
 
+            if (!IsValidOib(user.Oib))
+            {
+                return BadRequest(new { message = "Invalid OIB." });
+            }
+
+            var existingUser = _context.User.FirstOrDefault(u => u.Oib == user.Oib && u.Id != id);
+            if (existingUser != null)
+            {
+                return Conflict(new { message = "Another user with this OIB already exists." });
+            }
+
             if (!string.IsNullOrEmpty(user.Password))
             {
                 db.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
@@ -61,11 +118,10 @@ namespace CSHARP_FishingApp.Controllers
             db.Oib = user.Oib;
             db.LicenseNumber = user.LicenseNumber;
 
-
             _context.User.Update(db);
             _context.SaveChanges();
 
-            return Ok(new { poruka = "Successfully changed!" });
+            return Ok(new { message = "Successfully updated!" });
         }
 
         [HttpDelete]
@@ -82,7 +138,7 @@ namespace CSHARP_FishingApp.Controllers
 
             _context.User.Remove(db);
             _context.SaveChanges();
-            return Ok(new { poruka = "Successfully deleted!" });
+            return Ok(new { message = "Successfully deleted!" });
         }
     }
 }

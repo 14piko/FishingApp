@@ -1,48 +1,52 @@
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row, Alert } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { RoutesNames } from "../../constants";
 import UserServices from "../../services/UserServices";
+import { useState } from "react";
 
-export default function AddUsers(){
-
+export default function AddUsers() {
     const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState(""); 
 
-    async function add(user){
-        //console.log(user);
-        const response = await UserServices.addUser(user);
+    async function add(user) {
+        try {
+            const response = await UserServices.addUser(user);
 
-        if(response.error){
-            alert(response.message);
-            return;
+            if (response.error) {
+                setErrorMessage(response.message);  
+                return;
+            }
+
+            navigate(RoutesNames.USER_VIEW);
+        } catch (error) {
+            if(error.response.data.message == 'Invalid OIB.'){
+                setErrorMessage("Invalid OIB.");
+            }else if(error.response.data.message == 'User with this OIB already exists.'){
+                setErrorMessage("User with this OIB already exists.");
+            }else{
+                setErrorMessage("An unexpected error occurred while updating the user.");
+            }
         }
-        navigate(RoutesNames.USER_VIEW);
     }
 
-    function doSubmit(e){
+    function doSubmit(e) {
         e.preventDefault();
+        setErrorMessage(""); 
 
         const results = new FormData(e.target);
 
         const oib = results.get('oib');
         if (oib.length !== 11 || isNaN(oib)) {
-            alert('OIB must have 11 digits!');
+            setErrorMessage('OIB must have 11 digits!');
             return;
         }
-    
-    
+
         const licenseNumber = results.get('licenseNumber');
         if (licenseNumber.length !== 6 || isNaN(licenseNumber)) {
-            alert('License number must have 6 digits!');
+            setErrorMessage('License number must have 6 digits!');
             return;
         }
 
-        //ako je number ide parseInt(obicni broj) cijena je parseFloat(decimalni)
-
-        //ako je date moment.utc(results.get('date'))
-
-        //ako je boolean onda ide results.get('boolean')=='on' ? true : false
-
-    
         add({
             firstName: results.get('firstName'),
             lastName: results.get('lastName'),
@@ -52,20 +56,21 @@ export default function AddUsers(){
             oib: results.get('oib'),
             licenseNumber: results.get('licenseNumber')
         });
-
     }
 
-    return(
+    return (
         <Container>
-            Adding new user
+            <h2>Adding new user</h2>
+            <hr />
 
-           <hr />
+            {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+
             <Form onSubmit={doSubmit}>
                 <Form.Group controlId="firstName">
                     <Form.Label>First name</Form.Label>
                     <Form.Control type="text" name="firstName" required />
                 </Form.Group>
-              
+
                 <Form.Group controlId="lastName">
                     <Form.Label>Last name</Form.Label>
                     <Form.Control type="text" name="lastName" required />
@@ -99,18 +104,17 @@ export default function AddUsers(){
                 <hr />
                 <Row>
                     <Col xs={6} sm={6} md={3} lg={6} xl={6} xxl={6}>
-                    <Link to={RoutesNames.USER_VIEW}
-                    className="btn btn-danger width">
-                    Odustani
-                    </Link>
+                        <Link to={RoutesNames.USER_VIEW} className="btn btn-danger width">
+                            Odustani
+                        </Link>
                     </Col>
                     <Col xs={6} sm={6} md={9} lg={6} xl={6} xxl={6}>
-                    <Button variant="primary" type="submit" className="siroko">
-                        Add new user
-                    </Button>
+                        <Button variant="primary" type="submit" className="siroko">
+                            Add new user
+                        </Button>
                     </Col>
                 </Row>
             </Form>
         </Container>
-    )
+    );
 }
