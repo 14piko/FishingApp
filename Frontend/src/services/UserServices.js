@@ -10,8 +10,18 @@ async function get() {
         });
 }
 
-async function deleteUser(userId) {
-    return await HttpService.delete('/User/' + userId)
+async function getById(id) {
+    return await HttpService.get("/User/" + id)
+        .then((response) => {
+            return {error: false, message: response.data}
+        })
+        .catch((e) => {
+            return {error: true, message: 'User with that ID doesnt exists!'}
+        });
+}
+
+async function deleteUser(id) {
+    return await HttpService.delete('/User/' + id)
     .then((response) => {
         return {error: false, message: response.data.message}
     })
@@ -20,7 +30,25 @@ async function deleteUser(userId) {
     })
 }
 
+async function addUser(user) {
+    console.log(user);
+    return await HttpService.post('/User', user)
+        .then((response) => {
+            return {error: false, message: response.data}
+        });
+}
+
+async function editUser(id,user) {
+    return await HttpService.put('/User/' + id,user)
+        .then((response) => {
+            return {error: false, message: response.data}
+        });
+}
+
 export default {
     get,
-    deleteUser
+    getById,
+    deleteUser,
+    addUser,
+    editUser
 };

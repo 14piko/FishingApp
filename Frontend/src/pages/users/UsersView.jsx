@@ -2,13 +2,20 @@ import { Container, Table } from "react-bootstrap";
 import UserService from "../../services/UserServices";
 import { useEffect, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { RoutesNames } from "../../constants";
 
 
 export default function UsersView(){
+
     const[users,setUsers] = useState();
+
+    const navigate = useNavigate();
     
     async function getUsers() {
 
+        //zaustavi kod i onda se moze raditi debug u inspect
+        //debugger;
 
         await UserService.get()
         .then((answer)=>{
@@ -22,8 +29,8 @@ export default function UsersView(){
         getUsers();
     },[]);
 
-    async function deleteAsync(userId) {
-        const response = awaitUserService.deleteUser(userId);
+    async function deleteAsync(id) {
+        const response = await UserService.deleteUser(id);
         if(response.error){
             alert(response.message);
             return;
@@ -31,17 +38,15 @@ export default function UsersView(){
         getUsers();
     }
 
-    const handleEdit = (userId) => {
-        console.log(`Edit user with id: ${userId}`);
-    };
 
-    function handleDelete(userId) {
-        deleteAsync(userId);
+    function handleDelete(id) {
+        deleteAsync(id);
     };
 
 
     return(
         <Container>
+           <Link to={RoutesNames.NEW_USER}>Add new user</Link>
            <Table striped bordered hover responsive>
                 <thead>
                     <tr>
@@ -66,7 +71,7 @@ export default function UsersView(){
                             <td>
                                 <FaEdit 
                                     style={{ color: 'green', cursor: 'pointer', marginRight: '10px', fontSize: '1.5rem' }} 
-                                    onClick={() => handleEdit(user.id)} 
+                                    onClick={() => navigate(`/users/${user.id}`)} 
                                 />
                                 <FaTrash 
                                     style={{ color: 'red', cursor: 'pointer', fontSize: '1.5rem' }} 
