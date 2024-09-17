@@ -30,6 +30,8 @@ namespace CSHARP_FishingApp.Controllers
         [HttpPost]
         public IActionResult Post(User user)
         {
+            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+
             _context.User.Add(user);
             _context.SaveChanges();
             return StatusCode(StatusCodes.Status201Created, user);
@@ -47,7 +49,11 @@ namespace CSHARP_FishingApp.Controllers
                 return NotFound(new { message = "User not found." });
             }
 
-            db.Password = user.Password;
+            if (!string.IsNullOrEmpty(user.Password))
+            {
+                db.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+            }
+
             db.Email = user.Email;
             db.FirstName = user.FirstName;
             db.LastName = user.LastName;
