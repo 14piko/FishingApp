@@ -1,7 +1,7 @@
-﻿using CSHARP_FishingApp.Models;
+﻿using FishingApp.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CSHARP_FishingApp.Data
+namespace FishingApp.Data
 {
     public class FishingAppContext : DbContext
     {
@@ -9,5 +9,7 @@ namespace CSHARP_FishingApp.Data
         {
         }
         public DbSet<User> User { get; set; }
+        public DbSet<River> River { get; set; }
+        public DbSet<Fish> Fish { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CSHARP_FishingApp.Models
+namespace FishingApp.Models
 {
     public abstract class Entity
     {

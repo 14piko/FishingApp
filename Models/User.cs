@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CSHARP_FishingApp.Models
+namespace FishingApp.Models
 {
     public class User : Entity
     {
@@ -17,7 +17,7 @@ namespace CSHARP_FishingApp.Models
         public string? LastName { get; set; }
 
         [Column("role")]
-        public string? Role { get; set; }
+        public string? Role { get; set; } 
 
         [Column("oib")]
         public string? Oib { get; set; }
