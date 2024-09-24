@@ -6,12 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FishingApp.Controllers
 {
+
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class UserController(FishingAppContext context, IMapper mapper) : FishingAppController(context, mapper)
+    public class FishController(FishingAppContext context, IMapper mapper) : FishingAppController(context, mapper)
     {
         [HttpGet]
-        public ActionResult<List<UserDTORead>> Get()
+        public ActionResult<List<FishDTORead>> Get()
         {
             if (!ModelState.IsValid)
             {
@@ -19,26 +20,28 @@ namespace FishingApp.Controllers
             }
             try
             {
-                return Ok(_mapper.Map<List<UserDTORead>>(_context.User));
+                return Ok(_mapper.Map<List<FishDTORead>>(_context.Fish));
             }
             catch (Exception ex)
             {
                 return BadRequest(new { error = ex.Message });
             }
+
         }
+
 
         [HttpGet]
         [Route("{id:int}")]
-        public ActionResult<UserDTORead> GetById(int id)
+        public ActionResult<FishDTORead> GetById(int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(new { error = ModelState });
             }
-            User? e;
+            Fish? e;
             try
             {
-                e = _context.User.Find(id);
+                e = _context.Fish.Find(id);
             }
             catch (Exception ex)
             {
@@ -46,13 +49,14 @@ namespace FishingApp.Controllers
             }
             if (e == null)
             {
-                return NotFound(new { error = "User doesn't exist in database!" });
+                return NotFound(new { error = "Fish doesn't exist in database!" });
             }
-            return Ok(_mapper.Map<UserDTORead>(e));
+
+            return Ok(_mapper.Map<FishDTORead>(e));
         }
 
         [HttpPost]
-        public IActionResult Post(UserDTOInsertUpdate userDTO)
+        public IActionResult Post(FishDTOInsertUpdate fishDto)
         {
             if (!ModelState.IsValid)
             {
@@ -60,21 +64,24 @@ namespace FishingApp.Controllers
             }
             try
             {
-                var e = _mapper.Map<User>(userDTO);
-                _context.User.Add(e);
+                var e = _mapper.Map<Fish>(fishDto);
+                _context.Fish.Add(e);
                 _context.SaveChanges();
-                return StatusCode(StatusCodes.Status201Created, _mapper.Map<UserDTORead>(e));
+                return StatusCode(StatusCodes.Status201Created, _mapper.Map<FishDTORead>(e));
             }
             catch (Exception ex)
             {
                 return BadRequest(new { error = ex.Message });
             }
+
+
+
         }
 
         [HttpPut]
         [Route("{id:int}")]
         [Produces("application/json")]
-        public IActionResult Put(int id, UserDTOInsertUpdate userDTO)
+        public IActionResult Put(int id, FishDTOInsertUpdate fishDto)
         {
             if (!ModelState.IsValid)
             {
@@ -82,10 +89,10 @@ namespace FishingApp.Controllers
             }
             try
             {
-                User? e;
+                Fish? e;
                 try
                 {
-                    e = _context.User.Find(id);
+                    e = _context.Fish.Find(id);
                 }
                 catch (Exception ex)
                 {
@@ -93,17 +100,20 @@ namespace FishingApp.Controllers
                 }
                 if (e == null)
                 {
-                    return NotFound(new { error = "User doesn't exist in database!" });
+                    return NotFound(new { error = "Fish doesn't exist in database!" });
                 }
-                e = _mapper.Map(userDTO, e);
-                _context.User.Update(e);
+                e = _mapper.Map(fishDto, e);
+
+                _context.Fish.Update(e);
                 _context.SaveChanges();
+
                 return Ok(new { error = "Successfully changed!" });
             }
             catch (Exception ex)
             {
                 return BadRequest(new { error = ex.Message });
             }
+
         }
 
         [HttpDelete]
@@ -117,10 +127,10 @@ namespace FishingApp.Controllers
             }
             try
             {
-                User? e;
+                Fish? e;
                 try
                 {
-                    e = _context.User.Find(id);
+                    e = _context.Fish.Find(id);
                 }
                 catch (Exception ex)
                 {
@@ -128,16 +138,19 @@ namespace FishingApp.Controllers
                 }
                 if (e == null)
                 {
-                    return NotFound("User doesn't exist in database!");
+                    return NotFound("Fish doesn't exist in database!");
                 }
-                _context.User.Remove(e);
+                _context.Fish.Remove(e);
                 _context.SaveChanges();
-                return Ok(new { error = "Successfully deleted!" });
+                return Ok(new { poruka = "Successfully deleted!" });
             }
             catch (Exception ex)
             {
                 return BadRequest(new { error = ex.Message });
             }
         }
+
+
+
     }
 }
