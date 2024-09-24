@@ -2,7 +2,7 @@ import { Button, Col, Container, Form, Row, Alert } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { RoutesNames } from "../../constants";
 import UserServices from "../../services/UserServices";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function EditUsers() {
     const navigate = useNavigate();
@@ -10,7 +10,7 @@ export default function EditUsers() {
     const [users, setUsers] = useState({});
     const [errorMessage, setErrorMessage] = useState("");  
 
-    async function getUser() {
+    const getUser = useCallback(async () => {
         try {
             const response = await UserServices.getById(routeParams.id);
             if (response.error) {
@@ -19,19 +19,22 @@ export default function EditUsers() {
             }
             setUsers(response.message);
         } catch (error) {
-            setErrorMessage("An unexpected error occurred while fetching the user.");
+            if(error){
+                setErrorMessage("An unexpected error occurred while fetching the user.");
+                return;
+            }
         }
-    }
+    }, [routeParams.id]);
 
     useEffect(() => {
         getUser();
-    }, []);
+    }, [getUser]);
 
     async function edit(user) {
         try {
             const response = await UserServices.editUser(routeParams.id, user);
             if (response.error) {
-                setErrorMessage(response.message);  // Postavi poruku greške
+                setErrorMessage(response.message); 
                 return;
             }
             navigate(RoutesNames.USER_VIEW);

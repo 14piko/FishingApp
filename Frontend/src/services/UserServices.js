@@ -5,8 +5,8 @@ async function get() {
         .then((response) => {
             return response.data;
         })
-        .catch((e) => {
-            console.error(e);
+        .catch(() => {
+            console.error();
         });
 }
 
@@ -15,7 +15,7 @@ async function getById(id) {
         .then((response) => {
             return {error: false, message: response.data}
         })
-        .catch((e) => {
+        .catch(() => {
             return {error: true, message: 'User with that ID doesnt exists!'}
         });
 }
@@ -25,7 +25,7 @@ async function deleteUser(id) {
     .then((response) => {
         return {error: false, message: response.data.message}
     })
-    .catch((e) => {
+    .catch(() => {
         return {error: true, message: 'User cannot be deleted!'}
     })
 }
