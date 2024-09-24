@@ -21,9 +21,9 @@ create table "user"(
 create table fish(
 	id int not null primary key identity(1,1),
 	name varchar(255) not null,
-	hunt_start date not null,
-	hunt_end date not null,
-	description text
+	hunt_start dateTime not null,
+	hunt_end dateTime not null,
+	description varchar(255)
 );
 
 create table river(
