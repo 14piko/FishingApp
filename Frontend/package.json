@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build  && rmdir ..\\wwwroot /s /q && move /y dist ../wwwroot",
     "lint": "eslint .",
     "preview": "vite preview"
   },
