@@ -1,0 +1,40 @@
+.fish-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.fish-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.fish-description {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.fish-card .btn {
+    font-size: 0.9rem;
+    padding: 0.4rem 1rem;
+}
+
+.fish-card .btn-outline-success {
+    border-color: #28a745;
+    color: #28a745;
+}
+
+.fish-card .btn-outline-success:hover {
+    background-color: #28a745;
+    color: white;
+}
+
+.fish-card .btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.fish-card .btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}

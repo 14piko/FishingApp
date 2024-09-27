@@ -1,66 +1,67 @@
-import { Container, Table } from "react-bootstrap";
+import { Container, Table, Button, Modal } from "react-bootstrap";
 import UserService from "../../services/UserServices";
 import { useEffect, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { RoutesNames } from "../../constants";
+import './css/UsersView.css';
 
-
-export default function UsersView(){
-
-    const[users,setUsers] = useState();
-
+export default function UsersView() {
+    const [users, setUsers] = useState([]);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [userToDelete, setUserToDelete] = useState(null);
     const navigate = useNavigate();
-    
+
     async function getUsers() {
-
-        //zaustavi kod i onda se moze raditi debug u inspect
-        //debugger;
-
         await UserService.get()
-        .then((answer)=>{
-            setUsers(answer);
-        })
-        .catch((e)=>{console.log(e)});
-
+            .then((answer) => {
+                setUsers(answer);
+            })
+            .catch((e) => { console.log(e) });
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         getUsers();
-    },[]);
+    }, []);
 
     async function deleteAsync(id) {
         const response = await UserService.deleteUser(id);
-        if(response.error){
+        if (response.error) {
             alert(response.message);
             return;
         }
         getUsers();
+        setShowDeleteModal(false);
     }
 
-
     function handleDelete(id) {
-        deleteAsync(id);
-    };
+        setUserToDelete(id);
+        setShowDeleteModal(true);
+    }
 
+    function confirmDelete() {
+        deleteAsync(userToDelete);
+    }
 
-    return(
-        <Container>
-           <Link to={RoutesNames.NEW_USER}>Add new user</Link>
-           <Table striped bordered hover responsive>
+    return (
+        <Container className="users-view">
+            <Link to={RoutesNames.NEW_USER}>
+                <Button variant="primary" className="mb-3">Add new user</Button>
+            </Link>
+            <Table striped bordered hover responsive className="users-table">
                 <thead>
                     <tr>
-                        <th>First name</th>
-                        <th>Last name</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
                         <th>Email</th>
                         <th>Role</th>
                         <th>OIB</th>
-                        <th>License number</th>
-                        <th>Akcija</th>
+                        <th>License Number</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {users && users.map((user,index)=>(
+                    {users.map((user, index) => (
                         <tr key={index}>
                             <td>{user.firstName}</td>
                             <td>{user.lastName}</td>
@@ -82,6 +83,21 @@ export default function UsersView(){
                     ))}
                 </tbody>
             </Table>
+
+            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirm Deletion</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Are you sure you want to delete this user?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={confirmDelete}>
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
-    )
+    );
 }

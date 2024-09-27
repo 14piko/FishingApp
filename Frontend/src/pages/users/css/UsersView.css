@@ -1,0 +1,24 @@
+.users-view {
+    background-color: #f0f8ff;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.users-table {
+    background-color: #ffffff;
+    border-radius: 8px;
+}
+
+.users-table th {
+    background-color: #0b3d91;
+    color: #ffffff;
+}
+
+.users-table td {
+    color: #333333;
+}
+
+button {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
