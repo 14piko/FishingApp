@@ -13,6 +13,9 @@ import EditFishes from './pages/fishes/EditFishes';
 import RiversView from './pages/rivers/RiversView';
 import AddRiver from './pages/rivers/AddRivers';
 import EditRiver from './pages/rivers/EditRivers';
+import FishingsView from './pages/fishing/FishingsView';
+import AddFishings from './pages/fishing/AddFishings';
+import EditFishings from './pages/fishing/EditFishings';
 
 function App() {
   return (
@@ -21,15 +24,22 @@ function App() {
       <main className="main-content">
         <Routes>
           <Route path={RoutesNames.HOME} element={<Homepage />} />
+
           <Route path={RoutesNames.USER_VIEW} element={<UsersView />} />
           <Route path={RoutesNames.NEW_USER} element={<AddUsers />} />
           <Route path={RoutesNames.EDIT_USER} element={<EditUsers />} />
+
           <Route path={RoutesNames.FISH_VIEW} element={<FishesView />} />
           <Route path={RoutesNames.NEW_FISH} element={<AddFishes />} />
           <Route path={RoutesNames.EDIT_FISH} element={<EditFishes />} />
+
           <Route path={RoutesNames.RIVER_VIEW} element={<RiversView />} />
           <Route path={RoutesNames.NEW_RIVER} element={<AddRiver />} />
           <Route path={RoutesNames.EDIT_RIVER} element={<EditRiver />} />
+
+          <Route path={RoutesNames.FISHING_VIEW} element={<FishingsView />} />
+          <Route path={RoutesNames.NEW_FISHING} element={<AddFishings />} />
+          <Route path={RoutesNames.EDIT_FISHING} element={<EditFishings />} />
         </Routes>
       </main>
     </div>

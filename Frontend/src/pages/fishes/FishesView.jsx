@@ -32,7 +32,7 @@ export default function FishesView() {
         if (date == null) {
             return "Undefined";
         }
-        return moment.utc(date).format("DD.MM.YYYY.");
+        return moment.utc(date).format("DD.MM.");
     }
 
     async function deleteAsync(id) {

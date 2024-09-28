@@ -1,36 +1,39 @@
-import { Button, Col, Container, Form, Row, Alert } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { RoutesNames } from "../../constants";
 import FishServices from "../../services/FishServices";
 import { useEffect, useState } from "react";
+import DatePicker from "react-datepicker"; 
+import "react-datepicker/dist/react-datepicker.css"; 
 import moment from "moment";
+import { FaCalendarAlt } from 'react-icons/fa';
 
 export default function EditFishes() {
-
     const navigate = useNavigate();
     const routeParams = useParams();
     const [fish, setFishes] = useState({});
+    const [huntStart, setHuntStart] = useState(null);
+    const [huntEnd, setHuntEnd] = useState(null);
 
-    async function getFish(){
+    async function getFish() {
         const response = await FishServices.getById(routeParams.id);
         if (response.error) {
-            setErrorMessage(response.message); 
+            setErrorMessage(response.message);
             return;
         }
-        response.message.huntStart = moment.utc(response.message.huntStart).format('yyyy-MM-DD');
-        response.message.huntEnd = moment.utc(response.message.huntEnd).format('yyyy-MM-DD');
+        setHuntStart(moment.utc(response.message.huntStart).toDate());
+        setHuntEnd(moment.utc(response.message.huntEnd).toDate());
         setFishes(response.message);
     }
 
     useEffect(() => {
         getFish();
-    },[]);
+    }, []);
 
     async function edit(fish) {
-      
         const response = await FishServices.editFish(routeParams.id, fish);
         if (response.error) {
-            setErrorMessage(response.message); 
+            setErrorMessage(response.message);
             return;
         }
         navigate(RoutesNames.FISH_VIEW);
@@ -38,14 +41,11 @@ export default function EditFishes() {
 
     function doSubmit(e) {
         e.preventDefault();
-
-        const results = new FormData(e.target);
-
         edit({
-            name: results.get('name'),
-            huntStart: moment.utc(results.get('huntStart')),
-            huntEnd: moment.utc(results.get('huntEnd')),
-            description: results.get('description')
+            name: fish.name,
+            huntStart: moment(huntStart).format('YYYY-MM-DD'),
+            huntEnd: moment(huntEnd).format('YYYY-MM-DD'),
+            description: fish.description
         });
     }
 
@@ -67,14 +67,28 @@ export default function EditFishes() {
 
                 <Form.Group controlId="huntStart">
                     <Form.Label>Hunt start</Form.Label>
-                    <Form.Control type="date" name="huntStart"  
-                    defaultValue={fish.huntStart}/>
+                    <div className="input-container">
+                        <DatePicker
+                            selected={huntStart}
+                            onChange={date => setHuntStart(date)}
+                            dateFormat="dd.MM.yyyy"
+                            className="form-control date-input" 
+                        />
+                        <FaCalendarAlt className="calendar-icon" />
+                    </div>
                 </Form.Group>
 
                 <Form.Group controlId="huntEnd">
                     <Form.Label>Hunt end</Form.Label>
-                    <Form.Control type="date" name="huntEnd"  
-                    defaultValue={fish.huntEnd}/>
+                    <div className="input-container">
+                        <DatePicker
+                            selected={huntEnd}
+                            onChange={date => setHuntEnd(date)}
+                            dateFormat="dd.MM.yyyy"
+                            className="form-control date-input" 
+                        />
+                        <FaCalendarAlt className="calendar-icon" />
+                    </div>
                 </Form.Group>
 
                 <Form.Group controlId="description">

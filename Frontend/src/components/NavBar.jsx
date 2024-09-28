@@ -15,7 +15,7 @@ export default function NavBar() {
                 <Navbar.Brand onClick={() => navigate(RoutesNames.HOME)} className="navbar-title">
                     Fishing App
                 </Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Toggle aria-controls="basic-navbar-nav" className="navbar-toggle" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="ml-auto">
                         <Nav.Link onClick={() => navigate(RoutesNames.HOME)}>Home</Nav.Link>
@@ -26,8 +26,7 @@ export default function NavBar() {
                             <NavDropdown.Item onClick={() => navigate(RoutesNames.USER_VIEW)}>Users</NavDropdown.Item>
                             <NavDropdown.Item onClick={() => navigate(RoutesNames.FISH_VIEW)}>Fishes</NavDropdown.Item>
                             <NavDropdown.Item onClick={() => navigate(RoutesNames.RIVER_VIEW)}>Rivers</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action/3.4">Settings</NavDropdown.Item>
+                            <NavDropdown.Item onClick={() => navigate(RoutesNames.FISHING_VIEW)}>Fishings</NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
                 </Navbar.Collapse>

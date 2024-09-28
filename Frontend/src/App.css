@@ -27,3 +27,20 @@ footer {
     color: white;
     position: relative;
 }
+
+.input-container {
+    position: relative;
+}
+
+.date-input {
+    padding-right: 40px;
+}
+
+.calendar-icon {
+    position: absolute;
+    left: 210px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #797373;
+    pointer-events: none;
+}
