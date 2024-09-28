@@ -17,7 +17,7 @@ export default function Homepage() {
                     </Link>
                     <br></br>
                     <br></br>
-                    <Link to="/">
+                    <Link to="/fishings">
                         <Button variant="outline-light" size="lg">Add new catch</Button>
                     </Link>
                 </Container>
