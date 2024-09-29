@@ -19,7 +19,7 @@ export default function EditUsers() {
             }
             setUsers(response.message);
         } catch (error) {
-            if(error){
+            if(error) {
                 setErrorMessage("An unexpected error occurred while fetching the user.");
                 return;
             }
@@ -39,11 +39,11 @@ export default function EditUsers() {
             }
             navigate(RoutesNames.USER_VIEW);
         } catch (error) {
-            if(error.response.data.message == 'Invalid OIB.'){
+            if(error.response.data.message === 'Invalid OIB.') {
                 setErrorMessage("Invalid OIB.");
-            }else if(error.response.data.message == 'Another user with this OIB already exists.'){
+            } else if(error.response.status === 409) {
                 setErrorMessage("Another user with this OIB already exists.");
-            }else{
+            } else {
                 setErrorMessage("An unexpected error occurred while updating the user.");
             }
         }
@@ -67,11 +67,18 @@ export default function EditUsers() {
             return;
         }
 
+        const password = results.get('password');
+        const repeatPassword = results.get('repeatPassword');
+        if (password !== repeatPassword) {
+            setErrorMessage("Passwords do not match!");
+            return;
+        }
+
         edit({
             firstName: results.get('firstName'),
             lastName: results.get('lastName'),
             email: results.get('email'),
-            password: results.get('password'),
+            password: password,
             role: results.get('role'),
             oib: results.get('oib'),
             licenseNumber: results.get('licenseNumber')
@@ -109,7 +116,7 @@ export default function EditUsers() {
                 <Form.Group controlId="email">
                     <Form.Label>E-mail</Form.Label>
                     <Form.Control
-                        type="text"
+                        type="email"
                         name="email"
                         required
                         defaultValue={users.email}
@@ -122,18 +129,25 @@ export default function EditUsers() {
                         type="password"
                         name="password"
                         required
-                        defaultValue={users.password}
+                        defaultValue={users.password} 
+                    />
+                </Form.Group>
+
+                <Form.Group controlId="repeatPassword">
+                    <Form.Label>Repeat password</Form.Label>
+                    <Form.Control
+                        type="password"
+                        name="repeatPassword"
+                        required
                     />
                 </Form.Group>
 
                 <Form.Group controlId="role">
                     <Form.Label>Role</Form.Label>
-                    <Form.Control
-                        type="text"
-                        name="role"
-                        required
-                        defaultValue={users.role}
-                    />
+                    <Form.Control as="select" name='role' defaultValue={users.role} required>
+                        <option value="Admin">Admin</option>
+                        <option value="User">User</option>
+                    </Form.Control>
                 </Form.Group>
 
                 <Form.Group controlId="oib">
@@ -164,7 +178,7 @@ export default function EditUsers() {
                         </Link>
                     </Col>
                     <Col xs={6} sm={6} md={9} lg={6} xl={6} xxl={6}>
-                        <Button variant="primary" type="submit" className="siroko">
+                        <Button variant="primary" type="submit" className="width">
                             Save changes
                         </Button>
                     </Col>

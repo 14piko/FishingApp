@@ -22,3 +22,18 @@ button {
     font-size: 1.2rem;
     font-weight: bold;
 }
+
+.user-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.action-icons {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
