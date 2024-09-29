@@ -10,6 +10,31 @@ namespace FishingApp.Controllers
     [Route("api/v1/[controller]")]
     public class UserController(FishingAppContext context, IMapper mapper) : FishingAppController(context, mapper)
     {
+        private bool IsValidOib(string oib)
+        {
+            if (oib.Length != 11 || !oib.All(char.IsDigit))
+            {
+                return false;
+            }
+            int[] digits = oib.Select(d => int.Parse(d.ToString())).ToArray();
+            int factor = 10;
+            for (int i = 0; i < 10; i++)
+            {
+                factor = factor + digits[i];
+                factor = factor % 10;
+                if (factor == 0)
+                    factor = 10;
+                factor *= 2;
+                factor = factor % 11;
+            }
+            int controlDigit = 11 - factor;
+            if (controlDigit == 10)
+            {
+                controlDigit = 0;
+            }
+            return controlDigit == digits[10];
+        }
+
         [HttpGet]
         public ActionResult<List<UserDTORead>> Get()
         {
@@ -58,9 +83,25 @@ namespace FishingApp.Controllers
             {
                 return BadRequest(new { error = ModelState });
             }
+
+            if (!IsValidOib(userDTO.Oib))
+            {
+                return BadRequest(new { message = "Invalid OIB." });
+            }
+
+            var existingUser = _context.User.FirstOrDefault(u => u.Oib == userDTO.Oib);
+
+            if (existingUser != null)
+            {
+                return Conflict(new { message = "User with this OIB already exists." });
+            }
+
             try
             {
                 var e = _mapper.Map<User>(userDTO);
+
+                e.Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password); // Set the hashed password
+
                 _context.User.Add(e);
                 _context.SaveChanges();
                 return StatusCode(StatusCodes.Status201Created, _mapper.Map<UserDTORead>(e));
@@ -80,6 +121,20 @@ namespace FishingApp.Controllers
             {
                 return BadRequest(new { error = ModelState });
             }
+
+            if (!IsValidOib(userDTO.Oib))
+            {
+                return BadRequest(new { message = "Invalid OIB." });
+            }
+
+            var existingUser = _context.User
+                .FirstOrDefault(u => u.Oib == userDTO.Oib && u.Id != id);
+
+            if (existingUser != null)
+            {
+                return Conflict(new { message = "User with this OIB already exists." });
+            }
+
             try
             {
                 User? e;
@@ -95,7 +150,14 @@ namespace FishingApp.Controllers
                 {
                     return NotFound(new { error = "User doesn't exist in database!" });
                 }
+
                 e = _mapper.Map(userDTO, e);
+
+                if (!string.IsNullOrEmpty(userDTO.Password))
+                {
+                    e.Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password); // Set the hashed password
+                }
+
                 _context.User.Update(e);
                 _context.SaveChanges();
                 return Ok(new { error = "Successfully changed!" });
