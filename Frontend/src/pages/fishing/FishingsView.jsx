@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Container, Table } from "react-bootstrap";
-import { IoIosAdd } from "react-icons/io";
+import { Button, Container, Table, Modal } from "react-bootstrap";
 import { FaEdit, FaTrash, FaTrophy } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +11,10 @@ import useLoading from "../../hooks/useLoading";
 export default function FishingsView(){
 
     const [fishings, setFishings] = useState();
+
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    const [fishingToDelete, setFishingToDelete] = useState(null);
 
     let navigate = useNavigate(); 
 
@@ -37,11 +40,22 @@ export default function FishingsView(){
             return;
         }
         getFishings();
+        setShowDeleteModal(false);
     }
     useEffect(()=>{
         getFishings();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
+
+    
+    function handleDelete(id) {
+        setFishingToDelete(id);
+        setShowDeleteModal(true);
+    }
+
+    function confirmDelete() {
+        deleteFishing(fishingToDelete);
+    }
 
     function formatDate(date) {
         if (date == null) {
@@ -97,7 +111,7 @@ export default function FishingsView(){
                                     <span>  </span>
                                     <Button
                                         variant='danger'
-                                        onClick={() => deleteFishing(entity.id)}
+                                        onClick={() => handleDelete(entity.id)}
                                     >
                                         <FaTrash
                                         size={25}/>
@@ -107,6 +121,21 @@ export default function FishingsView(){
                     ))}
                 </tbody>
             </Table>
+
+            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirm Deletion</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Are you sure you want to delete this fishing?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={confirmDelete}>
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     );
 }
