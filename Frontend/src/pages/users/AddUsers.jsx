@@ -3,12 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { RoutesNames } from "../../constants";
 import UserServices from "../../services/UserServices";
 import { useState } from "react";
+import useLoading from "../../hooks/useLoading";
 
 export default function AddUsers() {
     const navigate = useNavigate();
+    const { showLoading, hideLoading } = useLoading();
     const [errorMessage, setErrorMessage] = useState(""); 
 
     async function add(user) {
+        showLoading();
         try {
             const response = await UserServices.addUser(user);
 
@@ -27,6 +30,7 @@ export default function AddUsers() {
                 setErrorMessage("An unexpected error occurred while updating the user.");
             }
         }
+        hideLoading();
     }
 
     function doSubmit(e) {

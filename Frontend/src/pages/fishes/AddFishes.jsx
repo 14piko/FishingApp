@@ -7,15 +7,19 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import { FaCalendarAlt } from 'react-icons/fa';
+import useLoading from "../../hooks/useLoading";
 
 export default function AddFishes() {
     const navigate = useNavigate();
+    const { showLoading, hideLoading } = useLoading();
     const [huntStart, setHuntStart] = useState(null);
     const [huntEnd, setHuntEnd] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
 
     async function add(fish) {
+        showLoading();
         const response = await FishServices.addFish(fish);
+        hideLoading();
         if (response.error) {
             setErrorMessage(response.message);  
             return;

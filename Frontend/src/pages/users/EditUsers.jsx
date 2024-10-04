@@ -3,14 +3,17 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { RoutesNames } from "../../constants";
 import UserServices from "../../services/UserServices";
 import { useCallback, useEffect, useState } from "react";
+import useLoading from "../../hooks/useLoading";
 
 export default function EditUsers() {
     const navigate = useNavigate();
     const routeParams = useParams();
     const [users, setUsers] = useState({});
-    const [errorMessage, setErrorMessage] = useState("");  
+    const [errorMessage, setErrorMessage] = useState(""); 
+    const { showLoading, hideLoading } = useLoading(); 
 
     const getUser = useCallback(async () => {
+        showLoading();
         try {
             const response = await UserServices.getById(routeParams.id);
             if (response.error) {
@@ -18,12 +21,14 @@ export default function EditUsers() {
                 return;
             }
             setUsers(response.message);
+          
         } catch (error) {
             if(error) {
                 setErrorMessage("An unexpected error occurred while fetching the user.");
                 return;
             }
         }
+        hideLoading();
     }, [routeParams.id]);
 
     useEffect(() => {
@@ -31,6 +36,7 @@ export default function EditUsers() {
     }, [getUser]);
 
     async function edit(user) {
+        showLoading();
         try {
             const response = await UserServices.editUser(routeParams.id, user);
             if (response.error) {
@@ -47,6 +53,7 @@ export default function EditUsers() {
                 setErrorMessage("An unexpected error occurred while updating the user.");
             }
         }
+        hideLoading();
     }
 
     function doSubmit(e) {

@@ -5,19 +5,23 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { RoutesNames } from "../../constants";
 import './css/UsersView.css';
+import useLoading from "../../hooks/useLoading";
 
 export default function UsersView() {
     const [users, setUsers] = useState([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [userToDelete, setUserToDelete] = useState(null);
     const navigate = useNavigate();
+    const { showLoading, hideLoading } = useLoading();
 
     async function getUsers() {
+        showLoading();
         await UserService.get()
             .then((answer) => {
                 setUsers(answer);
             })
             .catch((e) => { console.log(e) });
+        hideLoading();
     }
 
     useEffect(() => {
@@ -25,7 +29,9 @@ export default function UsersView() {
     }, []);
 
     async function deleteAsync(id) {
+        showLoading();
         const response = await UserService.deleteUser(id);
+        hideLoading();
         if (response.error) {
             alert(response.message);
             return;

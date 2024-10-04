@@ -3,13 +3,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { RoutesNames } from "../../constants";
 import RiverServices from "../../services/RiverServices";
 import { useState } from "react";
+import useLoading from "../../hooks/useLoading";
 
 export default function AddRiver() {
     const navigate = useNavigate();
+    const { showLoading, hideLoading } = useLoading();
     const [errorMessage, setErrorMessage] = useState("");
 
     async function add(river) {
+        showLoading();
         const response = await RiverServices.addRiver(river);
+        hideLoading();
         if (response.error) {
             setErrorMessage(response.message);  
             return;

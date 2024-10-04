@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { RoutesNames } from "../../constants";
 import moment from "moment";
 import './css/FishesView.css';  
+import useLoading from "../../hooks/useLoading";
 
 export default function FishesView() {
     const [fish, setFishes] = useState([]);
@@ -14,7 +15,10 @@ export default function FishesView() {
 
     const navigate = useNavigate();
 
+    const { showLoading, hideLoading } = useLoading();
+
     async function getFishes() {
+        showLoading();
         await FishServices.get()
             .then((answer) => {
                 setFishes(answer);
@@ -22,6 +26,8 @@ export default function FishesView() {
             .catch((e) => {
                 console.log(e);
             });
+
+            hideLoading();
     }
 
     useEffect(() => {
@@ -36,7 +42,9 @@ export default function FishesView() {
     }
 
     async function deleteAsync(id) {
+        showLoading();
         const response = await FishServices.deleteFish(id);
+        hideLoading();
         if (response.error) {
             alert(response.message);
             return;

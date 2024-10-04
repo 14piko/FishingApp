@@ -10,12 +10,15 @@ import moment from "moment";
 import DatePicker from "react-datepicker"; 
 import "react-datepicker/dist/react-datepicker.css"; 
 import { FaCalendarAlt } from 'react-icons/fa';
+import useLoading from "../../hooks/useLoading";
 
 export default function EditFishings() {
 
   const navigate = useNavigate();
 
   const routeParams = useParams();
+
+  const { showLoading, hideLoading } = useLoading();
 
   const [users, setUsers] = useState([]);
 
@@ -67,10 +70,12 @@ export default function EditFishings() {
 
 
   async function getInitialResults() {
+    showLoading();
     await getUsers();
     await getFishes();
     await getRivers();
     await getFishing();
+    hideLoading();
   }
   
   useEffect(()=>{

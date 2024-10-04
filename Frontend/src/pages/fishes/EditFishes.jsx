@@ -7,6 +7,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; 
 import moment from "moment";
 import { FaCalendarAlt } from 'react-icons/fa';
+import useLoading from "../../hooks/useLoading";
 
 export default function EditFishes() {
     const navigate = useNavigate();
@@ -15,8 +16,12 @@ export default function EditFishes() {
     const [huntStart, setHuntStart] = useState(null);
     const [huntEnd, setHuntEnd] = useState(null);
 
+    const { showLoading, hideLoading } = useLoading();
+
     async function getFish() {
+        showLoading();
         const response = await FishServices.getById(routeParams.id);
+        hideLoading();
         if (response.error) {
             setErrorMessage(response.message);
             return;
@@ -31,7 +36,9 @@ export default function EditFishes() {
     }, []);
 
     async function edit(fish) {
+        showLoading();
         const response = await FishServices.editFish(routeParams.id, fish);
+        hideLoading();
         if (response.error) {
             setErrorMessage(response.message);
             return;

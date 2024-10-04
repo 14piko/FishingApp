@@ -5,14 +5,17 @@ import { FaEdit, FaTrash, FaWater } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { RoutesNames } from "../../constants";
 import './css/RiversView.css';
+import useLoading from "../../hooks/useLoading";
 
 export default function RiversView() {
     const [rivers, setRivers] = useState([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [riverToDelete, setRiverToDelete] = useState(null);
     const navigate = useNavigate();
+    const { showLoading, hideLoading } = useLoading();
 
     async function getRivers() {
+        showLoading();
         await RiverServices.get()
             .then((answer) => {
                 setRivers(answer);
@@ -20,6 +23,7 @@ export default function RiversView() {
             .catch((e) => {
                 console.log(e);
             });
+            hideLoading();
     }
 
     useEffect(() => {
@@ -27,7 +31,9 @@ export default function RiversView() {
     }, []);
 
     async function deleteAsync(id) {
+        showLoading();
         const response = await RiverServices.deleteRiver(id);
+        hideLoading();
         if (response.error) {
             alert(response.message);
             return;

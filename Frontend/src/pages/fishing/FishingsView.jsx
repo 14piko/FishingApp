@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import FishingService from "../../services/FishingServices"; 
 import { RoutesNames } from "../../constants";
 import moment from "moment";
+import useLoading from "../../hooks/useLoading";
 
 export default function FishingsView(){
 
@@ -14,16 +15,22 @@ export default function FishingsView(){
 
     let navigate = useNavigate(); 
 
+    const { showLoading, hideLoading } = useLoading();
+
     async function getFishings(){
+        showLoading();
         await FishingService.get()
         .then((response)=>{
             setFishings(response);
         })
         .catch((e)=>{console.log(e)});
+        hideLoading();
     }
     
     async function deleteFishing(id) {
+        showLoading();
         const response = await FishingService.deleteFishing(id);
+        hideLoading();
        
         if(response.error){
             alert(response.message);

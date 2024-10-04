@@ -3,15 +3,19 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { RoutesNames } from "../../constants";
 import RiverServices from "../../services/RiverServices";
 import { useEffect, useState } from "react";
+import useLoading from "../../hooks/useLoading";
 
 export default function EditRiver() {
     const navigate = useNavigate();
     const routeParams = useParams();
     const [river, setRiver] = useState({});
     const [errorMessage, setErrorMessage] = useState("");
+    const { showLoading, hideLoading } = useLoading();
 
     async function getRiver() {
+        showLoading();
         const response = await RiverServices.getById(routeParams.id);
+        hideLoading();
         if (response.error) {
             setErrorMessage(response.message); 
             return;
@@ -24,7 +28,9 @@ export default function EditRiver() {
     }, []);
 
     async function edit(river) {
+        showLoading();
         const response = await RiverServices.editRiver(routeParams.id, river);
+        hideLoading();
         if (response.error) {
             setErrorMessage(response.message); 
             return;

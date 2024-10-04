@@ -10,10 +10,13 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import { FaCalendarAlt } from 'react-icons/fa';
+import useLoading from "../../hooks/useLoading";
 
 export default function AddFishings() {
 
   const navigate = useNavigate();
+
+  const { showLoading, hideLoading } = useLoading();
 
   const [users, setUsers,] = useState([]);
 
@@ -31,9 +34,11 @@ export default function AddFishings() {
 
 
   async function getUsers(){
+    showLoading();
     const response = await UserService.get();
     setUsers(response);
     setUserId(response[0].id);
+    hideLoading();
   }
   useEffect(()=>{
     getUsers();
@@ -41,9 +46,11 @@ export default function AddFishings() {
   },[]);
 
   async function getFishes(){
+    showLoading();
     const response = await FishService.get();
     setFishes(response);
     setFishId(response[0].id);
+    hideLoading();
   }
   useEffect(()=>{
     getFishes();
@@ -51,9 +58,11 @@ export default function AddFishings() {
   },[]);
 
   async function getRivers(){
+    showLoading();
     const response = await RiverService.get();
     setRivers(response);
     setRiverId(response[0].id);
+    hideLoading();
   }
   useEffect(()=>{
     getRivers();
@@ -62,7 +71,9 @@ export default function AddFishings() {
 
   
   async function add(e) {
+    showLoading();
     const response = await Service.addFishing(e);
+    hideLoading();
     if(response.error){
       alert(response.message);
       return;
