@@ -26,6 +26,7 @@ export default function UsersView() {
 
     useEffect(() => {
         getUsers();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     async function deleteAsync(id) {

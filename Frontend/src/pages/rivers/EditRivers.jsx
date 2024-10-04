@@ -25,6 +25,7 @@ export default function EditRiver() {
 
     useEffect(() => {
         getRiver();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     async function edit(river) {

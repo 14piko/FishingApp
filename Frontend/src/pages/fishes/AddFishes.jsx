@@ -14,7 +14,7 @@ export default function AddFishes() {
     const { showLoading, hideLoading } = useLoading();
     const [huntStart, setHuntStart] = useState(null);
     const [huntEnd, setHuntEnd] = useState(null);
-    const [errorMessage, setErrorMessage] = useState("");
+    const [setErrorMessage] = useState("");
 
     async function add(fish) {
         showLoading();

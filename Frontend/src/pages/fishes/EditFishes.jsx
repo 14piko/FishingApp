@@ -16,6 +16,7 @@ export default function EditFishes() {
     const [huntStart, setHuntStart] = useState(null);
     const [huntEnd, setHuntEnd] = useState(null);
     const { showLoading, hideLoading } = useLoading();
+    const [setErrorMessage] = useState("");
 
     async function getFish() {
         showLoading();
@@ -32,6 +33,7 @@ export default function EditFishes() {
 
     useEffect(() => {
         getFish();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     async function edit(fish) {

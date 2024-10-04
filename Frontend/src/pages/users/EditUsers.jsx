@@ -29,6 +29,7 @@ export default function EditUsers() {
             }
         }
         hideLoading();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [routeParams.id]);
 
     useEffect(() => {

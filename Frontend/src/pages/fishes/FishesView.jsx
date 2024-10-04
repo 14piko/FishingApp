@@ -32,6 +32,7 @@ export default function FishesView() {
 
     useEffect(() => {
         getFishes();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     function formatDate(date) {
