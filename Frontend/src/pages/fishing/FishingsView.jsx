@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, Container, Table } from "react-bootstrap";
 import { IoIosAdd } from "react-icons/io";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash, FaTrophy } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import FishingService from "../../services/FishingServices"; 
@@ -51,11 +51,16 @@ export default function FishingsView(){
     }
 
     return (
-        <Container>
-            <Link to={RoutesNames.NEW_FISHING} className="btn btn-success width">
-                <IoIosAdd
-                size={25}
-                /> Add new fishing
+        <Container className="mt-5">
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <h1 className="text-primary">
+                    <FaTrophy className="me-2" /> Fishing (catches) list
+                </h1>
+            </div>
+            <Link to={RoutesNames.NEW_FISHING}>
+                <Button variant="success" size="lg" className="mb-4">
+                    Add new fishing
+                </Button>
             </Link>
             <br></br>
             <br></br>

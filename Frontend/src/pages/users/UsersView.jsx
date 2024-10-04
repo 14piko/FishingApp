@@ -1,7 +1,7 @@
 import { Container, Card, Button, Modal, Row, Col } from "react-bootstrap";
 import UserService from "../../services/UserServices";
 import { useEffect, useState } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash, FaUsers } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { RoutesNames } from "../../constants";
 import './css/UsersView.css';
@@ -50,9 +50,16 @@ export default function UsersView() {
     }
 
     return (
-        <Container className="users-view">
+        <Container className="mt-5">
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <h1 className="text-primary">
+                    <FaUsers className="me-2" /> Users list
+                </h1>
+            </div>
             <Link to={RoutesNames.NEW_USER}>
-                <Button variant="primary" className="mb-3">Add new user</Button>
+                <Button variant="success" size="lg" className="mb-4">
+                    Add new user
+                </Button>
             </Link>
             <Row>
                 {users.map((user, index) => (
