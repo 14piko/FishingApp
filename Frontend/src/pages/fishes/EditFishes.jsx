@@ -15,7 +15,6 @@ export default function EditFishes() {
     const [fish, setFishes] = useState({});
     const [huntStart, setHuntStart] = useState(null);
     const [huntEnd, setHuntEnd] = useState(null);
-
     const { showLoading, hideLoading } = useLoading();
 
     async function getFish() {
@@ -48,11 +47,13 @@ export default function EditFishes() {
 
     function doSubmit(e) {
         e.preventDefault();
+        const results = new FormData(e.target);
+
         edit({
-            name: fish.name,
+            name: results.get('name'),
             huntStart: moment(huntStart).format('YYYY-MM-DD'),
             huntEnd: moment(huntEnd).format('YYYY-MM-DD'),
-            description: fish.description
+            description: results.get('description')
         });
     }
 

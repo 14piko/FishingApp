@@ -39,7 +39,7 @@ async function addFish(fish) {
 }
 
 async function editFish(id,fish) {
-    return await HttpService.put('/Fish/' + id,fish)
+    return await HttpService.put('/Fish/' + id, fish)
         .then((response) => {
             return {error: false, message: response.data}
         });
