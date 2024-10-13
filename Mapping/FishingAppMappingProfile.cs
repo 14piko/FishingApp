@@ -8,8 +8,20 @@ namespace FishingApp.Mapping
     {
         public FishingAppMappingProfile()
         {
-            CreateMap<User, UserDTORead>();
-            CreateMap<UserDTORead, User>();
+            CreateMap<User, UserDTORead>()
+                .ConvertUsing(entity => 
+                new UserDTORead(
+                    entity.Id,
+                    entity.FirstName ?? "",
+                    entity.LastName ?? "",
+                    entity.Email ?? "",
+                    entity.Password ?? "",
+                    entity.Oib ?? "",
+                    entity.LicenseNumber ?? "",
+                    entity.Role ?? "",
+                    FilePath(entity)));
+
+
             CreateMap<UserDTOInsertUpdate, User>();
 
             CreateMap<River, RiverDTORead>();
@@ -37,5 +49,21 @@ namespace FishingApp.Mapping
 
             CreateMap<FishingDTOInsertUpdate, Fishing>();
         }
+
+        private static string? FilePath(User e)
+        {
+            try
+            {
+                var ds = Path.DirectorySeparatorChar;
+                string image = Path.Combine(Directory.GetCurrentDirectory()
+                    + ds + "wwwroot" + ds + "images" + ds + "users" + ds + e.Id + ".png");
+                return File.Exists(image) ? "/images/users/" + e.Id + ".png" : null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
     }
 }
