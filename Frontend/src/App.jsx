@@ -18,12 +18,17 @@ import AddFishings from './pages/fishing/AddFishings';
 import EditFishings from './pages/fishing/EditFishings';
 import LoadingSpinner from './components/LoadingSpinner'
 import { Container } from 'react-bootstrap'
+import ErrorModal from './components/ErrorModal';
+import useError from "./hooks/useError"
 
 function App() {
+
+  const { errors, showErrorModal, hideError } = useError();
 
   return (
     <>
       <LoadingSpinner />
+      <ErrorModal show={showErrorModal} errors={errors} onHide={hideError} />
       <Container className='application'>
         <NavBar />
           <Routes>
