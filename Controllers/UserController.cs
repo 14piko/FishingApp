@@ -3,6 +3,7 @@ using FishingApp.Data;
 using FishingApp.Models;
 using FishingApp.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FishingApp.Controllers
 {
@@ -10,31 +11,6 @@ namespace FishingApp.Controllers
     [Route("api/v1/[controller]")]
     public class UserController(FishingAppContext context, IMapper mapper) : FishingAppController(context, mapper)
     {
-        private bool IsValidOib(string oib)
-        {
-            if (oib.Length != 11 || !oib.All(char.IsDigit))
-            {
-                return false;
-            }
-            int[] digits = oib.Select(d => int.Parse(d.ToString())).ToArray();
-            int factor = 10;
-            for (int i = 0; i < 10; i++)
-            {
-                factor = factor + digits[i];
-                factor = factor % 10;
-                if (factor == 0)
-                    factor = 10;
-                factor *= 2;
-                factor = factor % 11;
-            }
-            int controlDigit = 11 - factor;
-            if (controlDigit == 10)
-            {
-                controlDigit = 0;
-            }
-            return controlDigit == digits[10];
-        }
-
         [HttpGet]
         public ActionResult<List<UserDTORead>> Get()
         {
@@ -84,11 +60,6 @@ namespace FishingApp.Controllers
                 return BadRequest(new { error = ModelState });
             }
 
-            if (!IsValidOib(userDTO.Oib))
-            {
-                return BadRequest(new { message = "Invalid OIB." });
-            }
-
             var existingUser = _context.User.FirstOrDefault(u => u.Oib == userDTO.Oib);
 
             if (existingUser != null)
@@ -120,11 +91,6 @@ namespace FishingApp.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(new { error = ModelState });
-            }
-
-            if (!IsValidOib(userDTO.Oib))
-            {
-                return BadRequest(new { message = "Invalid OIB." });
             }
 
             var existingUser = _context.User
@@ -199,6 +165,66 @@ namespace FishingApp.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        [Route("search-paginator/{page}")]
+        public IActionResult SearchUserPaginator(int page, string condition = "")
+        {
+            var perPage = 8;
+            condition = condition.ToLower();
+            try
+            {
+                var users = _context.User
+                    .Where(u => EF.Functions.Like(u.FirstName.ToLower(), "%" + condition + "%")
+                                || EF.Functions.Like(u.LastName.ToLower(), "%" + condition + "%"))
+                    .Skip((perPage * page) - perPage)
+                    .Take(perPage)
+                    .OrderBy(u => u.LastName)
+                    .ToList();
+                return Ok(_mapper.Map<List<UserDTORead>>(users));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("set-image/{id:int}")]
+        public IActionResult SetImage(int id, ImageDTO image)
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Id must be greater then zero (0)");
+            }
+            if (image.Base64 == null || image.Base64?.Length == 0)
+            {
+                return BadRequest("Image is not uploaded!");
+            }
+            var u = _context.User.Find(id);
+            if (u == null)
+            {
+                return BadRequest("User with id: " + id + " doesnt exist!");
+            }
+            try
+            {
+                var ds = Path.DirectorySeparatorChar;
+                string dir = Path.Combine(Directory.GetCurrentDirectory()
+                    + ds + "wwwroot" + ds + "images" + ds + "users");
+
+                if (!System.IO.Directory.Exists(dir))
+                {
+                    System.IO.Directory.CreateDirectory(dir);
+                }
+                var path = Path.Combine(dir + ds + id + ".png");
+                System.IO.File.WriteAllBytes(path, Convert.FromBase64String(image.Base64!));
+                return Ok("Uspješno pohranjena slika");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
         }
     }
