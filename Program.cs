@@ -1,14 +1,15 @@
 using FishingApp.Data;
+using FishingApp.Extensions;
 using Microsoft.EntityFrameworkCore;
 using FishingApp.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddFishingAppSwaggerGen();
+builder.Services.AddFishingAppCORS();
 
 builder.Services.AddDbContext<FishingAppContext>(
     options =>
@@ -17,16 +18,10 @@ builder.Services.AddDbContext<FishingAppContext>(
     }
 );
 
-// CORS konfiguracija
-builder.Services.AddCors(opcije =>
-{
-    opcije.AddPolicy("CorsPolicy",
-        builder =>
-            builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
-    );
-});
-
 builder.Services.AddAutoMapper(typeof(FishingAppMappingProfile));
+
+builder.Services.AddFishingAppSecurity();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -35,10 +30,12 @@ app.UseSwaggerUI(options =>
 {
     options.ConfigObject.AdditionalItems.Add("requestSnippetsEnabled", true);
     options.EnableTryItOutByDefault();
+    options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
 });
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
