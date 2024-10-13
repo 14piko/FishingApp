@@ -9,7 +9,8 @@
         string Password,
         string? Oib,
         string? LicenseNumber,
-        string? Role
+        string? Role,
+        string? Image
         );
 
 }
