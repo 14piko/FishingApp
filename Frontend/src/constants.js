@@ -18,4 +18,6 @@ export const RoutesNames = {
     EDIT_FISHING: '/fishings/:id'
 };
 
-export const BACKEND_URL = 'https://piko307-001-site1.gtempurl.com/api/v1';
+export const APP_URL = 'https://piko307-001-site1.gtempurl.com';
+
+export const BACKEND_URL = APP_URL + '/api/v1';
