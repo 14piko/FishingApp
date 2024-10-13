@@ -5,8 +5,8 @@ async function get() {
         .then((response) => {
             return response.data;
         })
-        .catch(() => {
-            console.error();
+        .catch((e) => {
+            console.error(e);
         });
 }
 
@@ -45,10 +45,24 @@ async function editUser(id,user) {
         });
 }
 
+async function getPaginator(page,condition){
+    return await HttpService.get('/User/search-paginator/'+page + '?condition=' + condition)
+    .then((response)=>{return  {error: false, message: response.data};})
+    .catch((e)=>{ return {error: true, message: 'Error by searching users '}});
+}
+
+async function setImage(id, image) {
+    return await HttpService.put('/User/set-image/' + id, image)
+    .then((response)=>{return  {error: false, message: response.data};})
+    .catch((e)=>{ return {error: true, message: 'Error while setting user image '}});
+  }
+
 export default {
     get,
     getById,
     deleteUser,
     addUser,
-    editUser
-};
+    editUser,
+    getPaginator,
+    setImage
+}

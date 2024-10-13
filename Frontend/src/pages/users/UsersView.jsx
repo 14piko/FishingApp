@@ -1,33 +1,41 @@
-import { Container, Card, Button, Modal, Row, Col } from "react-bootstrap";
+import { Button, Card, Col, Form, Pagination, Row, Modal } from "react-bootstrap";
 import UserService from "../../services/UserServices";
 import { useEffect, useState } from "react";
-import { FaEdit, FaTrash, FaUsers } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
-import { RoutesNames } from "../../constants";
-import './css/UsersView.css';
+import { APP_URL, RoutesNames } from "../../constants";
+import { Link } from "react-router-dom";
+import defaultUserImage from '../../assets/defaultUser.png'; 
 import useLoading from "../../hooks/useLoading";
+import { FaEdit, FaTrash, FaUsers } from "react-icons/fa";
 
-export default function UsersView() {
-    const [users, setUsers] = useState([]);
+export default function UsersView(){
+
+    const [users, setUsers] = useState();
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [userToDelete, setUserToDelete] = useState(null);
-    const navigate = useNavigate();
+    const [page, setPage] = useState(1);
+    const [condition, setCondition] = useState('');
+
     const { showLoading, hideLoading } = useLoading();
 
     async function getUsers() {
         showLoading();
-        await UserService.get()
-            .then((answer) => {
-                setUsers(answer);
-            })
-            .catch((e) => { console.log(e) });
+        const response = await UserService.getPaginator(page, condition);
+        hideLoading();
+        if (response.error) {
+            alert(response.message);
+            return;
+        }
+        if (response.message.length === 0) {
+            setPage(page - 1);
+            return;
+        }
+        setUsers(response.message);
         hideLoading();
     }
 
     useEffect(() => {
         getUsers();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [page, condition]);
 
     async function deleteAsync(id) {
         showLoading();
@@ -38,7 +46,7 @@ export default function UsersView() {
             return;
         }
         getUsers();
-        setShowDeleteModal(false);
+         setShowDeleteModal(false);
     }
 
     function handleDelete(id) {
@@ -50,8 +58,35 @@ export default function UsersView() {
         deleteAsync(userToDelete);
     }
 
+    function image(users) {
+        console.log(users.image)
+        if (users.image != null) {
+            return APP_URL + users.image + `?${Date.now()}`;
+        }
+        return defaultUserImage;
+    }
+
+    function changeCondition(e) {
+        if (e.nativeEvent.key === "Enter") {
+            setPage(1);
+            setCondition(e.nativeEvent.srcElement.value);
+            setUsers([]);
+        }
+    }
+
+    function nextPage() {
+        setPage(page + 1);
+    }
+
+    function previousPage() {
+        if (page === 1) {
+            return;
+        }
+        setPage(page - 1);
+    }
+
     return (
-        <Container className="mt-5">
+        <>
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1 className="text-primary">
                     <FaUsers className="me-2" /> Users list
@@ -63,32 +98,70 @@ export default function UsersView() {
                 </Button>
             </Link>
             <Row>
-                {users.map((user, index) => (
-                    <Col sm={12} md={6} lg={4} key={index} className="mb-4">
-                        <Card className="user-card">
-                            <Card.Body>
-                                <Card.Title>{user.firstName} {user.lastName}</Card.Title>
-                                <Card.Subtitle className="mb-2 text-muted">{user.role}</Card.Subtitle>
-                                <Card.Text>
-                                    <strong>Email:</strong> {user.email}<br />
-                                    <strong>OIB:</strong> {user.oib}<br />
-                                    <strong>License Number:</strong> {user.licenseNumber}
-                                </Card.Text>
-                                <div className="action-icons">
-                                    <FaEdit 
-                                        style={{ color: 'green', cursor: 'pointer', marginRight: '10px', fontSize: '1.5rem' }} 
-                                        onClick={() => navigate(`/users/${user.id}`)} 
+                <Col sm={12} lg={7} md={7}>
+                    <Form.Control
+                        type="text"
+                        name="search"
+                        placeholder="Search users by first name or last name [Enter]"
+                        maxLength={255}
+                        defaultValue=""
+                        onKeyUp={changeCondition}
+                    />
+                </Col>
+            </Row>
+
+            <Row>
+                {users && users.map((u) => (
+                    <Col key={u.id} sm={12} lg={6} md={6}>
+                        <Card style={{ marginTop: '1rem', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', borderRadius: '12px' }}>
+                            <Row className="align-items-center">
+                                <Col sm={4} className="text-center">
+                                    <img 
+                                        src={image(u)} 
+                                        alt="User" 
+                                        className="img-fluid" 
+                                        style={{ maxWidth: '100px', maxHeight: '100px', borderRadius: '10px' }} // Blago zaobljeni rubovi
                                     />
-                                    <FaTrash 
-                                        style={{ color: 'red', cursor: 'pointer', fontSize: '1.5rem' }} 
-                                        onClick={() => handleDelete(user.id)} 
-                                    />
-                                </div>
-                            </Card.Body>
+                                </Col>
+                                <Col sm={8}>
+                                    <Card.Body>
+                                        <Card.Title style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+                                            {u.firstName} {u.lastName}
+                                        </Card.Title>
+                                        <Card.Text><strong>Role:</strong> {u.role}</Card.Text>
+                                        <Card.Text><strong>OIB:</strong> {u.oib}</Card.Text>
+                                        <Card.Text><strong>License Number:</strong> {u.licenseNumber}</Card.Text>
+                                        <Row>
+                                            <Col>
+                                                <Link className="btn btn-primary" to={`/users/${u.id}`}>
+                                                    <FaEdit />
+                                                </Link>
+                                            </Col>
+                                            <Col>
+                                                <Button variant="danger" onClick={() => handleDelete(u.id)}>
+                                                    <FaTrash />
+                                                </Button>
+                                            </Col>
+                                        </Row>
+                                    </Card.Body>
+                                </Col>
+                            </Row>
                         </Card>
                     </Col>
                 ))}
             </Row>
+
+            <hr />
+
+            {users && users.length > 0 && (
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Pagination size="lg">
+                        <Pagination.Prev onClick={previousPage} />
+                        <Pagination.Item disabled>{page}</Pagination.Item>
+                        <Pagination.Next onClick={nextPage} />
+                    </Pagination>
+                </div>
+            )}
 
             <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
                 <Modal.Header closeButton>
@@ -104,6 +177,6 @@ export default function UsersView() {
                     </Button>
                 </Modal.Footer>
             </Modal>
-        </Container>
+        </>
     );
 }
