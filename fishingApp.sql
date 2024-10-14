@@ -10,7 +10,7 @@ use fishingApp;
 create table "user"(
 	id int not null primary key identity(1,1),
 	email varchar(255) not null,
-	password char(255) not null,
+	password varchar(60) not null,
 	first_name varchar(255) not null,
 	last_name varchar(255) not null,
 	role varchar(255) not null,

@@ -3,6 +3,7 @@ using FishingApp.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 
 namespace FishingApp.Controllers
@@ -43,14 +44,23 @@ namespace FishingApp.Controllers
 
             var key = Encoding.UTF8.GetBytes("MojKljucKojijeJakoTajan i dovoljno dugačak da se može koristiti");
 
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, userBase.Email),
+                new Claim(ClaimTypes.Role, userBase.Role)
+            };
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.Add(TimeSpan.FromHours(8)),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var jwt = tokenHandler.WriteToken(token);
+
+            Console.WriteLine(jwt);
 
             return Ok(jwt);
         }
