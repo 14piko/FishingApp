@@ -2,28 +2,44 @@
 import { Link } from 'react-router-dom';
 import './Homepage.css'; 
 import { RoutesNames } from '../constants';
+import useAuth from '../hooks/useAuth';
 
 export default function Homepage() {
+    const { isLoggedIn, userRole } = useAuth(); // Pozivamo useAuth unutar komponente
+
     return (
         <div className="homepage">
             <div className="hero-section d-flex align-items-center text-center">
                 <Container>
                     <h1 className="text-white display-3 fw-bold">Welcome to Fishing App!</h1>
+
+                    {!isLoggedIn && (
                     <p className="text-white lead fw-bold">Track your catches, explore new locations, and join the fishing community.</p>
-                    <Link to="/fishes">
-                        <Button variant="success" size="lg" className="me-2">Fish list</Button>
-                    </Link>
-                    <Link to="/rivers">
-                        <Button variant="success" size="lg" className="me-2">River list</Button>
-                    </Link>
-                    <br></br>
-                    <br></br>
-                    <Link to="/fishings">
-                        <Button variant="outline-light" size="lg">Add new catch</Button>
-                    </Link>
+                    )}
+
+            
+                    {isLoggedIn && userRole === 'Admin' &&(
+                        <Link to="/fishes">
+                            <Button variant="success" size="lg" className="me-2">Fish list</Button>
+                        </Link>
+                    )}
+                     {isLoggedIn && userRole === 'Admin' &&(
+                        <Link to="/rivers">
+                            <Button variant="success" size="lg" className="me-2">River list</Button>
+                        </Link>
+                    )}
+                  
+                    <br />
+                    <br />
+                    {isLoggedIn && (
+                        <Link to="/fishings">
+                            <Button variant="outline-light" size="lg">Add new catch</Button>
+                        </Link>
+                    )}
                 </Container>
             </div>
 
+            {!isLoggedIn && (
             <Container className="features-section mt-5">
                 <h2 className="text-center mb-5">Key Features</h2>
                 <Row>
@@ -53,15 +69,18 @@ export default function Homepage() {
                     </Col>
                 </Row>
             </Container>
+            )}
 
+            {!isLoggedIn && (
             <div className="cta-section text-center mt-5 py-5 bg-dark text-white">
                 <Container>
                     <h2 className="mb-4">Ready to start your fishing adventure?</h2>
-                    <Link to="/login">
-                        <Button path={RoutesNames.LOGIN} variant="outline-light" size="lg">Log In</Button>
-                    </Link>
+                        <Link to={RoutesNames.LOGIN}>
+                            <Button variant="outline-light" size="lg">Log In</Button>
+                        </Link>
                 </Container>
             </div>
-        </div>
+            )}
+        </div>  
     );
 }
