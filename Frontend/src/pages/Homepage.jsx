@@ -1,6 +1,7 @@
 ﻿import { Container, Row, Col, Button, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import './Homepage.css'; 
+import { RoutesNames } from '../constants';
 
 export default function Homepage() {
     return (
@@ -56,11 +57,8 @@ export default function Homepage() {
             <div className="cta-section text-center mt-5 py-5 bg-dark text-white">
                 <Container>
                     <h2 className="mb-4">Ready to start your fishing adventure?</h2>
-                    <Link to="/register">
-                        <Button variant="primary" size="lg" className="me-2">Sign Up Now</Button>
-                    </Link>
                     <Link to="/login">
-                        <Button variant="outline-light" size="lg">Log In</Button>
+                        <Button path={RoutesNames.LOGIN} variant="outline-light" size="lg">Log In</Button>
                     </Link>
                 </Container>
             </div>

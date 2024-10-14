@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { RoutesNames } from '../constants';
 import useError from '../hooks/useError';
 import useLoading from '../hooks/useLoading';
+import { jwtDecode } from 'jwt-decode';
 
 export const AuthContext = createContext();
 
@@ -11,16 +12,20 @@ export function AuthProvider({ children }) {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [authToken, setAuthToken] = useState('');
+  const [userRole, setUserRole] = useState(''); 
   const { showLoading, hideLoading } = useLoading();
   const { showError } = useError();
   const navigate = useNavigate();
   
   useEffect(() => {
     const token = localStorage.getItem('Bearer');
-    
+
     if (token) {
       setAuthToken(token);
       setIsLoggedIn(true);
+      const decodedToken = jwtDecode(token);
+      const role = decodedToken.role;
+      setUserRole(role);
     } else {
       navigate(RoutesNames.HOME);
     }
@@ -32,15 +37,21 @@ export function AuthProvider({ children }) {
     hideLoading();
 
     if (!response.error) {
-      localStorage.setItem('Bearer', response.message);
-      setAuthToken(response.message);
+      const token = response.message; 
+      localStorage.setItem('Bearer', token);
+      setAuthToken(token);
       setIsLoggedIn(true);
+      const decodedToken = jwtDecode(token);
+      const role = decodedToken.role;
+      setUserRole(role);
+
       navigate(RoutesNames.HOME);
     } else {
       showError(response.message);
       localStorage.setItem('Bearer', '');
       setAuthToken('');
       setIsLoggedIn(false);
+      setUserRole('');
     }
   }
 
@@ -48,12 +59,14 @@ export function AuthProvider({ children }) {
     localStorage.setItem('Bearer', '');
     setAuthToken('');
     setIsLoggedIn(false);
+    setUserRole('');
     navigate(RoutesNames.HOME);
   }
 
   const value = {
     isLoggedIn,
     authToken,
+    userRole,
     login,
     logout,
   };

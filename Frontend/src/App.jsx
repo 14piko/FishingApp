@@ -21,12 +21,10 @@ import { Container } from 'react-bootstrap';
 import ErrorModal from './components/ErrorModal';
 import useError from "./hooks/useError";
 import Login from "./pages/Login";
-import useAuth from "./hooks/useAuth";
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
   const { errors, showErrorModal, hideError } = useError();
-  const { isLoggedIn } = useAuth();
-
   return (
     <>
       <LoadingSpinner />
@@ -35,24 +33,27 @@ function App() {
         <NavBar />
         <Routes>
           <Route path={RoutesNames.HOME} element={<Homepage />} />
-          {isLoggedIn ? (
-            <>
-              <Route path={RoutesNames.USER_VIEW} element={<UsersView />} />
-              <Route path={RoutesNames.NEW_USER} element={<AddUsers />} />
-              <Route path={RoutesNames.EDIT_USER} element={<EditUsers />} />
-              <Route path={RoutesNames.FISH_VIEW} element={<FishesView />} />
-              <Route path={RoutesNames.NEW_FISH} element={<AddFishes />} />
-              <Route path={RoutesNames.EDIT_FISH} element={<EditFishes />} />
-              <Route path={RoutesNames.RIVER_VIEW} element={<RiversView />} />
-              <Route path={RoutesNames.NEW_RIVER} element={<AddRiver />} />
-              <Route path={RoutesNames.EDIT_RIVER} element={<EditRiver />} />
-              <Route path={RoutesNames.FISHING_VIEW} element={<FishingsView />} />
-              <Route path={RoutesNames.NEW_FISHING} element={<AddFishings />} />
-              <Route path={RoutesNames.EDIT_FISHING} element={<EditFishings />} />
-            </>
-          ) : (
-            <Route path={RoutesNames.LOGIN} element={<Login />} />
-          )}
+          <Route path={RoutesNames.LOGIN} element={<Login />} />
+
+          {/* Privatne rute za administratore */}
+          <Route element={<PrivateRoute allowedRoles={['Admin']} />}>
+            <Route path={RoutesNames.USER_VIEW} element={<UsersView />} />
+            <Route path={RoutesNames.NEW_USER} element={<AddUsers />} />
+            <Route path={RoutesNames.EDIT_USER} element={<EditUsers />} />
+            <Route path={RoutesNames.FISH_VIEW} element={<FishesView />} />
+            <Route path={RoutesNames.NEW_FISH} element={<AddFishes />} />
+            <Route path={RoutesNames.EDIT_FISH} element={<EditFishes />} />
+            <Route path={RoutesNames.RIVER_VIEW} element={<RiversView />} />
+            <Route path={RoutesNames.NEW_RIVER} element={<AddRiver />} />
+            <Route path={RoutesNames.EDIT_RIVER} element={<EditRiver />} />
+          </Route>
+
+          {/* Privatne rute za korisnike i administratore */}
+          <Route element={<PrivateRoute allowedRoles={['User', 'Admin']} />}>
+            <Route path={RoutesNames.FISHING_VIEW} element={<FishingsView />} />
+            <Route path={RoutesNames.NEW_FISHING} element={<AddFishings />} />
+            <Route path={RoutesNames.EDIT_FISHING} element={<EditFishings />} />
+          </Route>
         </Routes>
       </Container>
     </>

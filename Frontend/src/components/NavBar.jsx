@@ -9,10 +9,10 @@ import useAuth from '../hooks/useAuth';
 
 export default function NavBar() {
     const navigate = useNavigate();
-    const { logout, isLoggedIn } = useAuth();
+    const { logout, isLoggedIn, userRole } = useAuth();
 
-    function OpenSwaggerURL(){
-        window.open(APP_URL + "/swagger/index.html", "_blank")
+    function OpenSwaggerURL() {
+        window.open(APP_URL + "/swagger/index.html", "_blank");
     }
 
     return (
@@ -23,23 +23,28 @@ export default function NavBar() {
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" className="navbar-toggle" />
                 <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="ml-auto">
+                    <Nav>
                         <Nav.Link onClick={() => navigate(RoutesNames.HOME)}>Home</Nav.Link>
-                        <Nav.Link onClick={()=> OpenSwaggerURL()}>API Docs</Nav.Link>
-                        {isLoggedIn ? (
-                                <>
+                        <Nav.Link onClick={() => OpenSwaggerURL()}>API Docs</Nav.Link>
+                        {isLoggedIn && (
                         <NavDropdown title="Programs" id="basic-nav-dropdown">
-                            <NavDropdown.Item onClick={() => navigate(RoutesNames.USER_VIEW)}>Users</NavDropdown.Item>
-                            <NavDropdown.Item onClick={() => navigate(RoutesNames.FISH_VIEW)}>Fishes</NavDropdown.Item>
-                            <NavDropdown.Item onClick={() => navigate(RoutesNames.RIVER_VIEW)}>Rivers</NavDropdown.Item>
+                            {userRole === 'Admin' && (
+                            <>
+                                <NavDropdown.Item onClick={() => navigate(RoutesNames.USER_VIEW)}>Users</NavDropdown.Item>
+                                <NavDropdown.Item onClick={() => navigate(RoutesNames.FISH_VIEW)}>Fishes</NavDropdown.Item>
+                                <NavDropdown.Item onClick={() => navigate(RoutesNames.RIVER_VIEW)}>Rivers</NavDropdown.Item>
+                            </>
+                            )}
+                            {/* Prikaži samo "Fishings" za usera */}
                             <NavDropdown.Item onClick={() => navigate(RoutesNames.FISHING_VIEW)}>Fishings</NavDropdown.Item>
                         </NavDropdown>
-                        <Nav.Link onClick={logout}>Odjava</Nav.Link>
-                        </>
+                        )}
+                    </Nav>
+                    <Nav className="ms-auto"> 
+                        {isLoggedIn ? (
+                            <Nav.Link onClick={logout}>Logout</Nav.Link>
                         ) : (
-                        <Nav.Link onClick={() => navigate(RoutesNames.LOGIN)}>
-                        Login
-                        </Nav.Link>
+                            <Nav.Link onClick={() => navigate(RoutesNames.LOGIN)}>Login</Nav.Link>
                         )}
                     </Nav>
                 </Navbar.Collapse>
