@@ -4,6 +4,7 @@ import App from './App.jsx'
 import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import { LoadingProvider } from './components/LoadingContext.jsx'
+import { AuthProvider } from './components/AuthContext.jsx';
 import { ErrorProvider } from './components/ErrorContext.jsx'
 
 createRoot(document.getElementById('root')).render(
@@ -11,7 +12,9 @@ createRoot(document.getElementById('root')).render(
         <BrowserRouter>
             <LoadingProvider>
                 <ErrorProvider>
-                    <App />
+                    <AuthProvider>
+                        <App />
+                    </AuthProvider>
                 </ErrorProvider>
             </LoadingProvider>
         </BrowserRouter>

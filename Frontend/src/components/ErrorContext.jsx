@@ -7,8 +7,8 @@ export const ErrorProvider = ({ children }) => {
   const [errors, setErrors] = useState([]);
   const [showErrorModal, setShowErrorModal] = useState(false);
 
-  function showError(errorsMessage) {
-    setErrors(errorsMessage);
+  function showError(errorMessage) {
+    setErrors(prevErrors => Array.isArray(errorMessage) ? errorMessage : [errorMessage]);
     setShowErrorModal(true);
   }
 
