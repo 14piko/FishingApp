@@ -48,7 +48,7 @@ alter table fishing add foreign key (fish) references fish(id);
 
 insert into "user"(email ,password, first_name, last_name ,role, oib, license_number) values
 ('admin@edunova.hr','$2y$10$Nsg4inxHgYub/2pGFSN8Mepfjp1e5m7nXBurTF97e9mn50TD3.Dra','Admin','Admin','Admin','68764300996','032546'),
-('mirko.eres1@gmail.com','$2y$10$RYiO37mfXGodsKPfHdF4bOPAfnkav.XAXxEC89kABZZheyGcqBs9K','Mirko','Ereš','Član','58462135789','324568');
+('mirko.eres1@gmail.com','$2y$10$RYiO37mfXGodsKPfHdF4bOPAfnkav.XAXxEC89kABZZheyGcqBs9K','Mirko','Ereš','User','58462135789','324568');
 
 insert into fish(name, hunt_start, hunt_end, description) values
 ('Šaran','2024-05-01','2020-05-31','Krupna ljuska,brkovi,žut trbuh'),

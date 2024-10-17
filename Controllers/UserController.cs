@@ -88,11 +88,13 @@ namespace FishingApp.Controllers
         [Produces("application/json")]
         public IActionResult Put(int id, UserDTOInsertUpdate userDTO)
         {
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(new { error = ModelState });
             }
 
+           
             var existingUser = _context.User
                 .FirstOrDefault(u => u.Oib == userDTO.Oib && u.Id != id);
 
@@ -103,30 +105,26 @@ namespace FishingApp.Controllers
 
             try
             {
-                User? e;
-                try
-                {
-                    e = _context.User.Find(id);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(new { error = ex.Message });
-                }
-                if (e == null)
+             
+                User? existingEntity = _context.User.Find(id);
+
+                if (existingEntity == null)
                 {
                     return NotFound(new { error = "User doesn't exist in database!" });
                 }
 
-                e = _mapper.Map(userDTO, e);
+          
+                _mapper.Map(userDTO, existingEntity);
 
                 if (!string.IsNullOrEmpty(userDTO.Password))
                 {
-                    e.Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password); // Set the hashed password
+                    existingEntity.Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password);
                 }
-
-                _context.User.Update(e);
+            
+                _context.User.Update(existingEntity);
                 _context.SaveChanges();
-                return Ok(new { error = "Successfully changed!" });
+
+                return Ok(new { message = "Successfully changed!" });
             }
             catch (Exception ex)
             {

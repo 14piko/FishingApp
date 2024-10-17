@@ -3,29 +3,38 @@ using FishingApp.Controllers;
 using FishingApp.Data;
 using FishingApp.Models;
 using FishingApp.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 namespace EdunovaAPP.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
     public class FishingController(FishingAppContext context, IMapper mapper) : FishingAppController(context, mapper)
     {
+
         [HttpGet]
+        [Authorize] 
         public ActionResult<List<FishingDTORead>> Get()
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(new { error = ModelState });
             }
-
+      
+            
             try
             {
-                var fishings = _context.Fishing
-                    .Include(f => f.User)
-                    .Include(f => f.Fish)
-                    .Include(f => f.River)
-                    .ToList(); 
+                var userEmail = User.FindFirst(ClaimTypes.Name)?.Value; 
+                var role = User.FindFirst(ClaimTypes.Role)?.Value;
+
+                
+                var fishings = role == "Admin"
+                    ? _context.Fishing.Include(f => f.User).Include(f => f.Fish).Include(f => f.River).ToList()
+                    : _context.Fishing.Include(f => f.User).Include(f => f.Fish).Include(f => f.River)
+                        .Where(f => f.User.Email == userEmail)
+                        .ToList();
 
                 return Ok(_mapper.Map<List<FishingDTORead>>(fishings));
             }
@@ -73,18 +82,44 @@ namespace EdunovaAPP.Controllers
                 return BadRequest(new { error = ModelState });
             }
 
-            User? es;
+            var emailClaim = User.FindFirst(ClaimTypes.Name)?.Value;
+
+            if (emailClaim == null)
+            {
+                return Unauthorized(new { error = "Unauthorized request!" });
+            }
+
+            User? currentUser;
             try
             {
-                es = _context.User.Find(dto.UserId);
+                currentUser = _context.User.FirstOrDefault(u => u.Email == emailClaim);
             }
             catch (Exception ex)
             {
                 return BadRequest(new { error = ex.Message });
             }
-            if (es == null)
+
+            if (currentUser == null)
             {
-                return NotFound(new { error = "User on fishing doesn't exist in database!" });
+                return NotFound(new { error = "Current user does not exist!" });
+            }
+
+            User? es;
+            if (currentUser.Role == "Admin")
+            {
+                es = _context.User.Find(dto.UserId);
+                if (es == null)
+                {
+                    return NotFound(new { error = "User on fishing doesn't exist in database!" });
+                }
+            }
+            else if (currentUser.Role == "User")
+            {
+                es = currentUser;
+            }
+            else
+            {
+                return BadRequest(new { error = "Unauthorized role!" });
             }
 
             Fish? fs;
@@ -114,11 +149,10 @@ namespace EdunovaAPP.Controllers
             {
                 return NotFound(new { error = "River on fishing doesn't exist in database!" });
             }
-
             try
             {
                 var e = _mapper.Map<Fishing>(dto);
-                e.User = es;
+                e.User = es;  
                 e.Fish = fs;
                 e.River = rv;
                 _context.Fishing.Add(e);
