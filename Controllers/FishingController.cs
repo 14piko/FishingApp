@@ -175,6 +175,16 @@ namespace EdunovaAPP.Controllers
             {
                 return BadRequest(new { error = ModelState });
             }
+
+            var emailClaim = User.FindFirst(ClaimTypes.Name)?.Value;
+
+            if (emailClaim == null)
+            {
+                return Unauthorized(new { error = "Unauthorized request!" });
+            }
+
+
+
             try
             {
                 Fishing? e;
@@ -191,18 +201,37 @@ namespace EdunovaAPP.Controllers
                     return NotFound(new { error = "Fishing doesn't exist in database!" });
                 }
 
-                User? es;
+                User? currentUser; 
                 try
                 {
-                    es = _context.User.Find(dto.UserId);
+                    currentUser = _context.User.FirstOrDefault(u => u.Email == emailClaim);
                 }
                 catch (Exception ex)
                 {
                     return BadRequest(new { error = ex.Message });
                 }
-                if (es == null)
+
+                if (currentUser == null)
                 {
-                    return NotFound(new { error = "User on fishing doesn't exist in database!" });
+                    return NotFound(new { error = "Current user does not exist!" });
+                }
+
+                User? es;
+                if (currentUser.Role == "Admin")
+                {
+                    es = _context.User.Find(dto.UserId);
+                    if (es == null)
+                    {
+                        return NotFound(new { error = "User on fishing doesn't exist in database!" });
+                    }
+                }
+                else if (currentUser.Role == "User")
+                {
+                    es = currentUser;
+                }
+                else
+                {
+                    return BadRequest(new { error = "Unauthorized role!" });
                 }
 
 

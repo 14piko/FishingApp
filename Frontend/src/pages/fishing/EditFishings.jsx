@@ -1,6 +1,6 @@
 import { Button, Col, Container, Form, Row} from 'react-bootstrap';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import Service from '../../services/FishingServices';
 import UserService from '../../services/UserServices';
 import FishService from '../../services/FishServices';
@@ -11,14 +11,16 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; 
 import { FaCalendarAlt } from 'react-icons/fa';
 import useLoading from "../../hooks/useLoading";
+import { AuthContext } from '../../components/AuthContext'; 
 
 export default function EditFishings() {
 
   const navigate = useNavigate();
   const routeParams = useParams();
   const { showLoading, hideLoading } = useLoading();
+  const { userRole, userId: loggedInUserId } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
-  const [userId, setUserId] = useState(0);
+  const [userId, setUserId] = useState(loggedInUserId);
   const [fishes, setFishes] = useState([]);
   const [fishId, setFishId] = useState(0);
   const [rivers, setRivers] = useState([]);
@@ -133,7 +135,8 @@ export default function EditFishings() {
             </div>
         </Form.Group>
 
-          <Form.Group className='mb-3' controlId='user'>
+        {userRole === 'Admin' && (
+            <Form.Group className='mb-3' controlId='user'>
             <Form.Label>User</Form.Label>
             <Form.Select 
             value={userId}
@@ -146,6 +149,7 @@ export default function EditFishings() {
             ))}
             </Form.Select>
           </Form.Group>
+          )}
 
           <Form.Group className='mb-3' controlId='fish'>
             <Form.Label>Fish</Form.Label>
