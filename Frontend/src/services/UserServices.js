@@ -38,7 +38,7 @@ async function addUser(user) {
         });
 }
 
-async function editUser(id,user) {
+async function editUser(id, user) {
     return await HttpService.put('/User/' + id,user)
         .then((response) => {
             return {error: false, message: response.data}

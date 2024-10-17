@@ -76,7 +76,7 @@ export default function Homepage() {
                 <Container>
                     <h2 className="mb-4">Ready to start your fishing adventure?</h2>
                         <Link to={RoutesNames.LOGIN}>
-                            <Button variant="outline-light" size="lg">Log In</Button>
+                            <Button variant="outline-light" size="lg">Log in</Button>
                         </Link>
                 </Container>
             </div>

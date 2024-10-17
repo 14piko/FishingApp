@@ -16,7 +16,7 @@ export default function EditFishes() {
     const [huntStart, setHuntStart] = useState(null);
     const [huntEnd, setHuntEnd] = useState(null);
     const { showLoading, hideLoading } = useLoading();
-    const [setErrorMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     async function getFish() {
         showLoading();
@@ -51,6 +51,21 @@ export default function EditFishes() {
         e.preventDefault();
         const results = new FormData(e.target);
 
+        if (!huntStart) {
+            setErrorMessage("Please select hunt start date!");
+            return;
+        }
+
+        if (!huntEnd) {
+            setErrorMessage("Please select hunt end date!");
+            return;
+        }
+        
+        if (moment(huntStart).isAfter(moment(huntEnd))) {
+            setErrorMessage("Hunt start date cannot be greater than hunt end date!");
+            return;
+        }
+
         edit({
             name: results.get('name'),
             huntStart: moment(huntStart).format('YYYY-MM-DD'),
@@ -63,7 +78,7 @@ export default function EditFishes() {
         <Container>
             <h2>Edit fish</h2>
             <hr />
-
+            {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
             <Form onSubmit={doSubmit}>
                 <Form.Group controlId="name">
                     <Form.Label>Fish name</Form.Label>
@@ -82,7 +97,8 @@ export default function EditFishes() {
                             selected={huntStart}
                             onChange={date => setHuntStart(date)}
                             dateFormat="dd.MM.yyyy"
-                            className="form-control date-input" 
+                            className="form-control date-input"
+                            placeholderText="Select date"
                         />
                         <FaCalendarAlt className="calendar-icon" />
                     </div>
@@ -96,6 +112,7 @@ export default function EditFishes() {
                             onChange={date => setHuntEnd(date)}
                             dateFormat="dd.MM.yyyy"
                             className="form-control date-input" 
+                            placeholderText="Select date"
                         />
                         <FaCalendarAlt className="calendar-icon" />
                     </div>

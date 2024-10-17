@@ -42,9 +42,9 @@ export default function NavBar() {
                     </Nav>
                     <Nav className="ms-auto"> 
                         {isLoggedIn ? (
-                            <Nav.Link onClick={logout}>Logout</Nav.Link>
+                            <Nav.Link onClick={logout}>Log out</Nav.Link>
                         ) : (
-                            <Nav.Link onClick={() => navigate(RoutesNames.LOGIN)}>Login</Nav.Link>
+                            <Nav.Link onClick={() => navigate(RoutesNames.LOGIN)}>Log in</Nav.Link>
                         )}
                     </Nav>
                 </Navbar.Collapse>

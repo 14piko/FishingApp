@@ -71,28 +71,29 @@ export default function EditUsers() {
     function doSubmit(e) {
         e.preventDefault();
         setErrorMessage("");  
-
+    
         const results = new FormData(e.target);
-
+    
         const oib = results.get('oib');
         if (oib.length !== 11 || isNaN(oib)) {
             setErrorMessage('OIB must have 11 digits!');
             return;
         }
-
+    
         const licenseNumber = results.get('licenseNumber');
         if (licenseNumber.length !== 6 || isNaN(licenseNumber)) {
             setErrorMessage('License number must have 6 digits!');
             return;
         }
-
+    
         const password = results.get('password');
         const repeatPassword = results.get('repeatPassword');
-        if (password !== repeatPassword) {
+    
+        if (password && password !== repeatPassword) {
             setErrorMessage("Passwords do not match!");
             return;
         }
-
+        
         edit({
             firstName: results.get('firstName'),
             lastName: results.get('lastName'),
@@ -185,8 +186,7 @@ export default function EditUsers() {
                     <Form.Control
                         type="password"
                         name="password"
-                        required
-                        defaultValue={users.password} 
+                        defaultValue=""
                     />
                 </Form.Group>
 
@@ -195,7 +195,7 @@ export default function EditUsers() {
                     <Form.Control
                         type="password"
                         name="repeatPassword"
-                        required
+                        defaultValue="" 
                     />
                 </Form.Group>
 

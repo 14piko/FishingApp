@@ -14,7 +14,7 @@ export default function AddFishes() {
     const { showLoading, hideLoading } = useLoading();
     const [huntStart, setHuntStart] = useState(null);
     const [huntEnd, setHuntEnd] = useState(null);
-    const [setErrorMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     async function add(fish) {
         showLoading();
@@ -29,7 +29,21 @@ export default function AddFishes() {
 
     function doSubmit(e) {
         e.preventDefault();
-        setErrorMessage(""); 
+        
+        if (!huntStart) {
+            setErrorMessage("Please select hunt start date!");
+            return;
+        }
+
+        if (!huntEnd) {
+            setErrorMessage("Please select hunt end date!");
+            return;
+        }
+        
+        if (moment(huntStart).isAfter(moment(huntEnd))) {
+            setErrorMessage("Hunt start date cannot be greater than hunt end date!");
+            return;
+        }
 
         add({
             name: e.target.name.value,
@@ -43,6 +57,7 @@ export default function AddFishes() {
         <Container>
             <h2>Adding new fish</h2>
             <hr />
+            {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
             <Form onSubmit={doSubmit}>
                 <Form.Group controlId="name">
                     <Form.Label>Fish name</Form.Label>

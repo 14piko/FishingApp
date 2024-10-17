@@ -23,7 +23,7 @@ export default function Login() {
             email: admin@edunova.hr
         </p>
         <p>
-            lozinka: a
+            password: a
         </p>
 
       <Form onSubmit={handleSubmit}>
@@ -38,11 +38,11 @@ export default function Login() {
           />
         </Form.Group>
         <Form.Group className='mb-3' controlId='password'>
-          <Form.Label>Lozinka</Form.Label>
+          <Form.Label>Password</Form.Label>
           <Form.Control type='password' name='password' required />
         </Form.Group>
         <Button variant='primary' className='button' type='submit'>
-          Login
+          Log in
         </Button>
       </Form>
     </Container>

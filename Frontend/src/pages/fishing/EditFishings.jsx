@@ -15,27 +15,17 @@ import useLoading from "../../hooks/useLoading";
 export default function EditFishings() {
 
   const navigate = useNavigate();
-
   const routeParams = useParams();
-
   const { showLoading, hideLoading } = useLoading();
-
   const [users, setUsers] = useState([]);
-
   const [userId, setUserId] = useState(0);
-
   const [fishes, setFishes] = useState([]);
-
   const [fishId, setFishId] = useState(0);
-
   const [rivers, setRivers] = useState([]);
-
   const [riverId, setRiverId] = useState(0);
-
   const [fishing, setFishing] = useState({});
-
   const [dateHunt, setDateHunt] = useState(null);
-
+  const [errorMessage, setErrorMessage] = useState("");
 
   async function getUsers(){
     const response = await UserService.get();
@@ -98,6 +88,20 @@ export default function EditFishings() {
 
     const results = new FormData(e.target);
 
+    if (!dateHunt) {
+      setErrorMessage("Please select hunt date!");
+      return;
+    }
+
+    const today = moment().startOf('day'); 
+    
+    if (moment(dateHunt).isAfter(today)) {
+        setErrorMessage("Hunt date cannot be in the future!");
+        return;
+    }
+
+    setErrorMessage("");
+
     edit({
       date: moment(dateHunt).format('YYYY-MM-DD'),
       userId: parseInt(userId),
@@ -113,9 +117,8 @@ export default function EditFishings() {
       <Container>
         <h2>Editing fishing</h2>
         <hr />
-      
+      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
       <Form onSubmit={doSubmit}>
- 
         <Form.Group controlId="date">
             <Form.Label>Date of catch</Form.Label>
             <div className="input-container">
@@ -124,6 +127,7 @@ export default function EditFishings() {
                     onChange={date => setDateHunt(date)}
                     dateFormat="dd.MM.yyyy"
                     className="form-control date-input" 
+                    placeholderText="Select date"
                 />
                 <FaCalendarAlt className="calendar-icon" />
             </div>

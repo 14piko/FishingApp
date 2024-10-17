@@ -15,6 +15,7 @@ export function AuthProvider({ children }) {
   const [userRole, setUserRole] = useState(''); 
   const { showLoading, hideLoading } = useLoading();
   const { showError } = useError();
+  const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -26,6 +27,7 @@ export function AuthProvider({ children }) {
       const decodedToken = jwtDecode(token);
       const role = decodedToken.role;
       setUserRole(role);
+      setCurrentUser(decodedToken);
     } else {
       navigate(RoutesNames.HOME);
     }
@@ -44,6 +46,7 @@ export function AuthProvider({ children }) {
       const decodedToken = jwtDecode(token);
       const role = decodedToken.role;
       setUserRole(role);
+      setCurrentUser(decodedToken);
 
       navigate(RoutesNames.HOME);
     } else {
@@ -52,6 +55,7 @@ export function AuthProvider({ children }) {
       setAuthToken('');
       setIsLoggedIn(false);
       setUserRole('');
+      setCurrentUser(null);
     }
   }
 
@@ -60,13 +64,19 @@ export function AuthProvider({ children }) {
     setAuthToken('');
     setIsLoggedIn(false);
     setUserRole('');
+    setCurrentUser(null);
     navigate(RoutesNames.HOME);
   }
+
+  function getCurrentUser() {
+    return currentUser;
+}
 
   const value = {
     isLoggedIn,
     authToken,
     userRole,
+    currentUser,
     login,
     logout,
   };

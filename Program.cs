@@ -1,7 +1,6 @@
 using FishingApp.Data;
 using FishingApp.Extensions;
 using Microsoft.EntityFrameworkCore;
-using FishingApp.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
