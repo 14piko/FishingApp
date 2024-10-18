@@ -170,7 +170,7 @@ namespace FishingApp.Controllers
         [Route("search-paginator/{page}")]
         public IActionResult SearchUserPaginator(int page, string condition = "")
         {
-            var perPage = 8;
+            var perPage = 6;
             condition = condition.ToLower();
             try
             {
@@ -218,7 +218,7 @@ namespace FishingApp.Controllers
                 }
                 var path = Path.Combine(dir + ds + id + ".png");
                 System.IO.File.WriteAllBytes(path, Convert.FromBase64String(image.Base64!));
-                return Ok("Uspješno pohranjena slika");
+                return Ok("Successfully uploaded image");
             }
             catch (Exception e)
             {

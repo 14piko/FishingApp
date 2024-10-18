@@ -3,6 +3,7 @@ using FishingApp.Data;
 using FishingApp.Models;
 using FishingApp.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FishingApp.Controllers
 {
@@ -150,7 +151,63 @@ namespace FishingApp.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("search-paginator/{page}")]
+        public IActionResult SearchFishPaginator(int page, string condition = "")
+        {
+            var perPage = 6;
+            condition = condition.ToLower();
+            try
+            {
+                var fishes = _context.Fish
+                    .Where(f => EF.Functions.Like(f.Name.ToLower(), "%" + condition + "%"))
+                    .Skip((perPage * page) - perPage)
+                    .Take(perPage)
+                    .OrderBy(f => f.Name)
+                    .ToList();
+                return Ok(_mapper.Map<List<FishDTORead>>(fishes));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
+        [HttpPut]
+        [Route("set-image/{id:int}")]
+        public IActionResult SetImage(int id, ImageDTO image)
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Id must be greater then zero (0)");
+            }
+            if (image.Base64 == null || image.Base64?.Length == 0)
+            {
+                return BadRequest("Image is not uploaded!");
+            }
+            var f = _context.Fish.Find(id);
+            if (f == null)
+            {
+                return BadRequest("Fish with id: " + id + " doesnt exist!");
+            }
+            try
+            {
+                var ds = Path.DirectorySeparatorChar;
+                string dir = Path.Combine(Directory.GetCurrentDirectory()
+                    + ds + "wwwroot" + ds + "images" + ds + "fishes");
 
+                if (!System.IO.Directory.Exists(dir))
+                {
+                    System.IO.Directory.CreateDirectory(dir);
+                }
+                var path = Path.Combine(dir + ds + id + ".png");
+                System.IO.File.WriteAllBytes(path, Convert.FromBase64String(image.Base64!));
+                return Ok("Successfully uploaded image");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

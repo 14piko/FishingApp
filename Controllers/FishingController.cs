@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+
 namespace EdunovaAPP.Controllers
 {
     [ApiController]
@@ -309,6 +310,50 @@ namespace EdunovaAPP.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        [Route("search-paginator/{page}")]
+        public IActionResult SearchFishingPaginator(int page, string condition = "")
+        {
+            const int perPage = 8;
+
+            try
+            {
+                var userEmail = User.FindFirst(ClaimTypes.Name)?.Value;
+                var role = User.FindFirst(ClaimTypes.Role)?.Value;
+
+                IQueryable<Fishing> query = _context.Fishing
+                    .Include(f => f.User)
+                    .Include(f => f.Fish)
+                    .Include(f => f.River);
+
+                if (role != "Admin")
+                {
+                    query = query.Where(f => f.User.Email == userEmail);
+                }
+
+                if (!string.IsNullOrEmpty(condition))
+                {
+                    condition = condition.ToLower();
+                    query = query.Where(f =>
+                        EF.Functions.Like(f.Fish.Name.ToLower(), "%" + condition + "%") ||
+                        EF.Functions.Like(f.River.Name.ToLower(), "%" + condition + "%") ||
+                        EF.Functions.Like(f.User.FirstName.ToLower(), "%" + condition + "%") ||
+                        EF.Functions.Like(f.User.LastName.ToLower(), "%" + condition + "%"));
+                }
+
+                var fishings = query
+                    .Skip((page - 1) * perPage)
+                    .Take(perPage)
+                    .ToList();
+
+                return Ok(_mapper.Map<List<FishingDTORead>>(fishings));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
         }
     }

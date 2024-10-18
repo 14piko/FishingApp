@@ -3,6 +3,7 @@ using FishingApp.Data;
 using FishingApp.Models;
 using FishingApp.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FishingApp.Controllers
 {
@@ -150,7 +151,26 @@ namespace FishingApp.Controllers
             }
         }
 
-
-
+        [HttpGet]
+        [Route("search-paginator/{page}")]
+        public IActionResult SearchRiverPaginator(int page, string condition = "")
+        {
+            var perPage = 6;
+            condition = condition.ToLower();
+            try
+            {
+                var rivers = _context.River
+                    .Where(r => EF.Functions.Like(r.Name.ToLower(), "%" + condition + "%"))
+                    .Skip((perPage * page) - perPage)
+                    .Take(perPage)
+                    .OrderBy(r => r.Name)
+                    .ToList();
+                return Ok(_mapper.Map<List<RiverDTORead>>(rivers));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
