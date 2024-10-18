@@ -87,6 +87,7 @@ export default function UsersView(){
 
     return (
         <>
+        <br></br>
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1 className="text-primary">
                     <FaUsers className="me-2" /> Users list
@@ -109,7 +110,6 @@ export default function UsersView(){
                     />
                 </Col>
             </Row>
-
             <Row>
                 {users && users.map((u) => (
                     <Col key={u.id} sm={12} lg={6} md={6}>
@@ -120,7 +120,7 @@ export default function UsersView(){
                                         src={image(u)} 
                                         alt="User" 
                                         className="img-fluid" 
-                                        style={{ maxWidth: '100px', maxHeight: '100px', borderRadius: '10px' }} // Blago zaobljeni rubovi
+                                        style={{ maxWidth: '90%', maxHeight: '90%', borderRadius: '10px', objectFit: 'cover', marginTop: '10px', marginLeft: '10px' }} 
                                     />
                                 </Col>
                                 <Col sm={8}>

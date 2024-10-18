@@ -55,6 +55,7 @@ export default function AddFishes() {
 
     return (
         <Container>
+            <br></br>
             <h2>Adding new fish</h2>
             <hr />
             {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}

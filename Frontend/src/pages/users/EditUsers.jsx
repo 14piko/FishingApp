@@ -15,6 +15,7 @@ export default function EditUsers() {
     const routeParams = useParams();
     const [users, setUsers] = useState({});
     const [errorMessage, setErrorMessage] = useState(""); 
+    const [successMessage, setSuccessMessage] = useState(""); 
     const { showLoading, hideLoading } = useLoading(); 
     const [currentImage, setCurrentImage] = useState('');
     const [imageForCrop, setImageForCrop] = useState('');
@@ -136,7 +137,7 @@ export default function EditUsers() {
         
         if(!response.ok){
           hideLoading();
-          showError(response.results);
+          setSuccessMessage('Successfully uploaded image!')
         }
 
         setCurrentImage(imageForServer);
@@ -145,11 +146,11 @@ export default function EditUsers() {
 
     return (
         <Container>
+            <br></br>
             <h2>Edit user</h2>
             <hr />
 
             {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-
             <Form onSubmit={doSubmit}>
                 <Form.Group controlId="firstName">
                     <Form.Label>First name</Form.Label>
@@ -227,63 +228,105 @@ export default function EditUsers() {
                     />
                 </Form.Group>
 
-                <Row className='mb-4'>
-              <Col key='1' sm={12} lg={6} md={12}>
-                <p className='form-label'>Current avatar</p>
-                <Image
-                  src={currentImage}
-                  className='avatar'
-                />
-              </Col>
-              <Col key='2' sm={12} lg={6} md={12}>
-                {imageForServer && (
-                  <>
-                    <p className='form-label'>New avatar</p>
+                <br></br>
+                {successMessage && <Alert variant="success">{successMessage}</Alert>}
+                <br></br>
+
+                <Row className="mb-4">
+                  <Col sm={6} md={6} lg={6}>
+                    <p className="form-label">Current avatar</p>
                     <Image
-                      src={imageForServer || imageForCrop}
-                      className='avatar'
+                      src={currentImage}
+                      className="avatar"
                     />
+                  </Col>
+
+                  <Col sm={6} md={6} lg={6}>
+                    <p className="form-label">New avatar</p>
+                    <Image
+                      src={imageForServer || imageForCrop || defaultUserImage}
+                      className="avatar"
+                    />
+                  </Col>
+                </Row>
+
+                {!imageForCrop && !imageForServer && (
+                  <>
+                  <Row className="mb-3">
+                      <Col xs={6} sm={6} md={3} lg={6}>
+                          <input className="mb-3" type="file" onChange={onChangeImage} />
+                      </Col>
+                      <Col xs={6} sm={6} md={3} lg={6}>
+                          <Button variant="success" disabled={!imageForServer} onClick={saveImage} className="width center">
+                          Set avatar
+                          </Button>
+                      </Col>
+                  </Row>
+                
+                  <Row className="mb-3">
+                    <Col xs={6} sm={6} md={3} lg={6}>
+                      <Link to={RoutesNames.USER_VIEW} className="btn btn-danger width">
+                        Cancel
+                      </Link>
+                    </Col>
+                    <Col xs={6} sm={6} md={9} lg={6}>
+                      <Button variant="primary" type="submit" className="width">
+                        Save Changes
+                      </Button>
+                    </Col>
+                  </Row>
                   </>
                 )}
-              </Col>
-            </Row>
 
-                <hr />
-                <Row>
-                    <Col xs={6} sm={6} md={3} lg={6} xl={6} xxl={6}>
-                        <Link to={RoutesNames.USER_VIEW} className="btn btn-danger width">
-                            Cancel
-                        </Link>
-                    </Col>
-                    <Col xs={6} sm={6} md={9} lg={6} xl={6} xxl={6}>
-                        <Button variant="primary" type="submit" className="width">
-                            Save changes
+                {imageForCrop && (
+                  <>
+                    <Row className="mb-4">
+                      <Col>
+                        <Cropper
+                          src={imageForCrop}
+                          style={{ height: 300, width: '100%' }}
+                          initialAspectRatio={1}
+                          guides={true}
+                          viewMode={1}
+                          minCropBoxWidth={50}
+                          minCropBoxHeight={50}
+                          cropBoxResizable={false}
+                          background={false}
+                          responsive={true}
+                          checkOrientation={false}
+                          cropstart={onCrop}
+                          cropend={onCrop}
+                          ref={cropperRef}
+                        />
+                      </Col>
+                    </Row>
+
+                    <Row className="mb-3">
+                        <Col xs={6} sm={6} md={3} lg={6}>
+                        <input className="mb-3" type="file" onChange={onChangeImage} />
+                        </Col>
+                        <Col xs={6} sm={6} md={3} lg={6}>
+                        <Button variant="success" disabled={!imageForServer} onClick={saveImage} className="width center">
+                        Set avatar
                         </Button>
-                    </Col>
-                </Row>
-            
-                <Col key='2' sm={12} lg={6} md={6}>
-                <input className='mb-3' type='file' onChange={onChangeImage} />
-                    <Button disabled={!imageForServer} onClick={saveImage}>
-                        Save avatar
-                    </Button>
-                    <Cropper
-                        src={imageForCrop}
-                        style={{ height: 400, width: '100%' }}
-                        initialAspectRatio={1}
-                        guides={true}
-                        viewMode={1}
-                        minCropBoxWidth={50}
-                        minCropBoxHeight={50}
-                        cropBoxResizable={false}
-                        background={false}
-                        responsive={true}
-                        checkOrientation={false}
-                        cropstart={onCrop}
-                        cropend={onCrop}
-                        ref={cropperRef}
-                    />
-                </Col>
+                        </Col>
+                    </Row>
+
+                    <Row className="mb-3">
+                      <Col xs={6} sm={6} md={3} lg={6}>
+                        <Link to={RoutesNames.USER_VIEW} className="btn btn-danger width">
+                          Cancel
+                        </Link>
+                      </Col>
+                      <Col xs={6} sm={6} md={9} lg={6}>
+                        <Button variant="primary" type="submit" className="width">
+                          Save changes
+                        </Button>
+                      </Col>
+                    </Row>
+                  </>
+                )}
+
             </Form>
         </Container>
     );

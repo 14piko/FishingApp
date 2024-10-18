@@ -54,7 +54,7 @@ async function getPaginator(page,condition){
 async function setImage(id, image) {
     return await HttpService.put('/User/set-image/' + id, image)
     .then((response)=>{return  {error: false, message: response.data};})
-    .catch((e)=>{ return {error: true, message: 'Error while setting user image '}});
+    .catch((e)=>{ return {error: true, message: 'Error while uploading user image '}});
   }
 
 export default {

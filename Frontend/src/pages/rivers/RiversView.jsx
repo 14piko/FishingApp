@@ -1,4 +1,4 @@
-import { Container, Card, Row, Col, Button, Modal } from "react-bootstrap";
+import { Pagination, Form, Card, Row, Col, Button, Modal } from "react-bootstrap";
 import RiverServices from "../../services/RiverServices";
 import { useEffect, useState } from "react";
 import { FaEdit, FaTrash, FaWater } from "react-icons/fa";
@@ -8,28 +8,34 @@ import './css/RiversView.css';
 import useLoading from "../../hooks/useLoading";
 
 export default function RiversView() {
+
     const [rivers, setRivers] = useState([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [riverToDelete, setRiverToDelete] = useState(null);
     const navigate = useNavigate();
     const { showLoading, hideLoading } = useLoading();
+    const [page, setPage] = useState(1);
+    const [condition, setCondition] = useState('');
 
     async function getRivers() {
         showLoading();
-        await RiverServices.get()
-            .then((answer) => {
-                setRivers(answer);
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-            hideLoading();
+        const response = await RiverServices.getPaginator(page, condition);
+        hideLoading();
+        if (response.error) {
+            alert(response.message);
+            return;
+        }
+        if (response.message.length === 0) {
+            setPage(page - 1);
+            return;
+        }
+        setRivers(response.message);
+        hideLoading();
     }
 
     useEffect(() => {
         getRivers();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [page, condition]);
 
     async function deleteAsync(id) {
         showLoading();
@@ -52,8 +58,28 @@ export default function RiversView() {
         deleteAsync(riverToDelete);
     }
 
+    function changeCondition(e) {
+        if (e.nativeEvent.key === "Enter") {
+            setPage(1);
+            setCondition(e.nativeEvent.srcElement.value);
+            setRivers([]);
+        }
+    }
+
+    function nextPage() {
+        setPage(page + 1);
+    }
+
+    function previousPage() {
+        if (page === 1) {
+            return;
+        }
+        setPage(page - 1);
+    }
+
     return (
-        <Container className="mt-5">
+        <>
+        <br></br>
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1 className="text-primary">
                     <FaWater className="me-2" /> River list
@@ -64,6 +90,19 @@ export default function RiversView() {
                     Add new river
                 </Button>
             </Link>
+            <Row>
+                <Col sm={12} lg={7} md={7}>
+                    <Form.Control
+                        type="text"
+                        name="search"
+                        placeholder="Search rivers by name [Enter]"
+                        maxLength={255}
+                        defaultValue=""
+                        onKeyUp={changeCondition}
+                    />
+                </Col>
+            </Row>
+            <br></br>
             <Row xs={1} md={2} lg={3} className="g-4">
                 {rivers.map((river, index) => (
                     <Col key={index}>
@@ -94,6 +133,18 @@ export default function RiversView() {
                 ))}
             </Row>
 
+            <hr />
+
+            {rivers && rivers.length > 0 && (
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Pagination size="lg">
+                        <Pagination.Prev onClick={previousPage} />
+                        <Pagination.Item disabled>{page}</Pagination.Item>
+                        <Pagination.Next onClick={nextPage} />
+                    </Pagination>
+                </div>
+            )}
+
             <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Confirm Deletion</Modal.Title>
@@ -108,6 +159,6 @@ export default function RiversView() {
                     </Button>
                 </Modal.Footer>
             </Modal>
-        </Container>
+        </>
     );
 }

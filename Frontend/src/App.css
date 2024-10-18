@@ -59,3 +59,44 @@ footer {
     align-items: center;
     justify-content: center;
   }
+
+  .avatar {
+    max-width: 350px; 
+    height: auto; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    margin-bottom: 10px; 
+  }
+  
+  .cropper-container {
+    max-width: 100%; 
+  }
+  
+  .mb-3 {
+    margin-bottom: 15px; 
+  }
+
+  .custom-card {
+    border-radius: 15px; 
+    transition: transform 0.2s; 
+}
+
+.custom-card:hover {
+    transform: scale(1.05); 
+}
+
+.fish-image {
+    max-width: 100%; 
+    height: auto; 
+    border-radius: 10px; 
+}
+
+.fish-card {
+    margin: 10px; 
+}
+
+.fish-description {
+    max-height: 100px; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+}

@@ -72,6 +72,7 @@ export default function AddUsers() {
 
     return (
         <Container>
+        <br></br>
         <h2>Adding new user</h2>
         <hr />
 

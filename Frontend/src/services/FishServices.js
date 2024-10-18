@@ -45,10 +45,24 @@ async function editFish(id,fish) {
         });
 }
 
+async function getPaginator(page,condition){
+    return await HttpService.get('/Fish/search-paginator/'+page + '?condition=' + condition)
+    .then((response)=>{return  {error: false, message: response.data};})
+    .catch((e)=>{ return {error: true, message: 'Error by searching users '}});
+}
+
+async function setImage(id, image) {
+    return await HttpService.put('/Fish/set-image/' + id, image)
+    .then((response)=>{return  {error: false, message: response.data};})
+    .catch((e)=>{ return {error: true, message: 'Error while uploading fish image '}});
+  }
+
 export default {
     get,
     getById,
     deleteFish,
     addFish,
-    editFish
+    editFish,
+    getPaginator,
+    setImage
 };

@@ -1,39 +1,43 @@
-import { Container, Card, Row, Col, Button, Badge, Modal } from "react-bootstrap";
+import { Form, Card, Row, Col, Button, Badge, Modal, Pagination } from "react-bootstrap";
 import FishServices from "../../services/FishServices";
 import { useEffect, useState } from "react";
 import { FaEdit, FaTrash, FaFish } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { RoutesNames } from "../../constants";
+import { APP_URL, RoutesNames } from "../../constants";
 import moment from "moment";
 import './css/FishesView.css';  
 import useLoading from "../../hooks/useLoading";
+import defaultFishImage from '../../assets/defaultFish.png';
 
 export default function FishesView() {
     const [fish, setFishes] = useState([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [fishToDelete, setFishToDelete] = useState(null);
+    const [page, setPage] = useState(1);
+    const [condition, setCondition] = useState('');
 
     const navigate = useNavigate();
-
     const { showLoading, hideLoading } = useLoading();
 
     async function getFishes() {
         showLoading();
-        await FishServices.get()
-            .then((answer) => {
-                setFishes(answer);
-            })
-            .catch((e) => {
-                console.log(e);
-            });
-
-            hideLoading();
+        const response = await FishServices.getPaginator(page, condition);
+        hideLoading();
+        if (response.error) {
+            alert(response.message);
+            return;
+        }
+        if (response.message.length === 0) {
+            setPage(page - 1);
+            return;
+        }
+        setFishes(response.message);
+        hideLoading();
     }
 
     useEffect(() => {
         getFishes();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [page, condition]);
 
     function formatDate(date) {
         if (date == null) {
@@ -63,8 +67,36 @@ export default function FishesView() {
         deleteAsync(fishToDelete);
     }
 
+    function changeCondition(e) {
+        if (e.nativeEvent.key === "Enter") {
+            setPage(1);
+            setCondition(e.nativeEvent.srcElement.value);
+            setFishes([]);
+        }
+    }
+
+    function nextPage() {
+        setPage(page + 1);
+    }
+
+    function previousPage() {
+        if (page === 1) {
+            return;
+        }
+        setPage(page - 1);
+    }
+
+    function image(fishes) {
+        console.log(fishes.image)
+        if (fishes.image != null) {
+            return APP_URL + fishes.image + `?${Date.now()}`;
+        }
+        return defaultFishImage;
+    }
+
     return (
-        <Container className="mt-5">
+        <>
+            <br />
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1 className="text-primary">
                     <FaFish className="me-2" /> Fish list
@@ -75,42 +107,77 @@ export default function FishesView() {
                     Add new fish
                 </Button>
             </Link>
+            <Row>
+                <Col sm={12} lg={7} md={7}>
+                    <Form.Control
+                        type="text"
+                        name="search"
+                        placeholder="Search fish by name [Enter]"
+                        maxLength={255}
+                        defaultValue=""
+                        onKeyUp={changeCondition}
+                    />
+                </Col>
+            </Row>
+            <br />
             <Row xs={1} md={2} lg={3} className="g-4">
-                {fish &&
-                    fish.map((fish, index) => (
-                        <Col key={index}>
-                            <Card className="shadow-sm fish-card">
-                                <Card.Body>
-                                    <Card.Title className="d-flex justify-content-between align-items-center">
-                                        <span className="text-info fs-4">{fish.name}</span>
-                                        <Badge bg="primary">{formatDate(fish.huntStart)} - {formatDate(fish.huntEnd)}</Badge>
-                                    </Card.Title>
-                                    <Card.Text className="fish-description">{fish.description}</Card.Text>
-                                    <div className="d-flex justify-content-end">
-                                        <Button 
-                                            variant="outline-success" 
-                                            className="me-2"
-                                            onClick={() => navigate(`/fishes/${fish.id}`)}
-                                        >
-                                            <FaEdit /> Edit
-                                        </Button>
-                                        <Button 
-                                            variant="outline-danger" 
-                                            onClick={() => handleDelete(fish.id)}
-                                        >
-                                            <FaTrash /> Delete
-                                        </Button>
-                                    </div>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    ))}
+                {fish && fish.map((fish, index) => (
+                    <Col key={index}>
+                        <Card className="shadow-sm fish-card custom-card">
+                            <Row className="g-0">
+                                <Col md={4} className="text-center d-flex align-items-center justify-content-center">
+                                    <img 
+                                        src={image(fish)} 
+                                        alt={fish.name} 
+                                        className="img-fluid fish-image" 
+                                        style={{ maxWidth: '105%', maxHeight: '105%', borderRadius: '10px', objectFit: 'cover', marginTop: '10px', marginLeft: '10px' }} 
+                                    />
+                                </Col>
+                                <Col md={8}>
+                                    <Card.Body>
+                                        <Card.Title className="d-flex justify-content-between align-items-center">
+                                            <span className="text-info fs-4">{fish.name}</span>
+                                            <Badge bg="primary">{formatDate(fish.huntStart)} - {formatDate(fish.huntEnd)}</Badge>
+                                        </Card.Title>
+                                        <Card.Text className="fish-description">{fish.description}</Card.Text>
+                                        <div className="d-flex justify-content-end">
+                                            <Button 
+                                                variant="outline-success" 
+                                                className="me-2"
+                                                onClick={() => navigate(`/fishes/${fish.id}`)}
+                                            >
+                                                <FaEdit /> Edit
+                                            </Button>
+                                            <Button 
+                                                variant="outline-danger" 
+                                                onClick={() => handleDelete(fish.id)}
+                                            >
+                                                <FaTrash /> Delete
+                                            </Button>
+                                        </div>
+                                    </Card.Body>
+                                </Col>
+                            </Row>
+                        </Card>
+                    </Col>
+                ))}
             </Row>
 
-            {/* Modal for confirming deletion */}
+            <hr />
+
+            {fish && fish.length > 0 && (
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Pagination size="lg">
+                        <Pagination.Prev onClick={previousPage} />
+                        <Pagination.Item disabled>{page}</Pagination.Item>
+                        <Pagination.Next onClick={nextPage} />
+                    </Pagination>
+                </div>
+            )}
+
             <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Confirm Deletion</Modal.Title>
+                    <Modal.Title>Confirm deletion</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>Are you sure you want to delete this fish?</Modal.Body>
                 <Modal.Footer>
@@ -122,6 +189,6 @@ export default function FishesView() {
                     </Button>
                 </Modal.Footer>
             </Modal>
-        </Container>
+        </>
     );
 }

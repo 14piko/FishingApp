@@ -108,7 +108,8 @@ export default function AddFishings() {
  
   return (
     <Container>
-      <h2>Add fishing</h2>
+      <br></br>
+      <h2>Add new fishing</h2>
       <hr />
       {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
       <Form onSubmit={doSubmit}>

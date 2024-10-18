@@ -50,8 +50,9 @@ export default function EditRiver() {
     }
 
     return (
-        <Container className="mt-5">
-            <h2 className="text-primary">Edit River</h2>
+        <Container>
+            <br></br>
+            <h2>Edit river</h2>
             <hr />
             {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
             <Form onSubmit={doSubmit}>

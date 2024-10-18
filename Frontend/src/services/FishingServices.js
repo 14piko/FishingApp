@@ -69,10 +69,17 @@ async function editFishing(id, Fishing) {
     });
 }
 
+async function getPaginator(page,condition){
+    return await HttpService.get('/Fishing/search-paginator/'+page + '?condition=' + condition)
+    .then((response)=>{return  {error: false, message: response.data};})
+    .catch((e)=>{ return {error: true, message: 'Error by searching fishing '}});
+}
+
 export default{
     get,
     getById,
     deleteFishing,
     addFishing,
-    editFishing
+    editFishing,
+    getPaginator
 }

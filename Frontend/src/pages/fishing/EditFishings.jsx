@@ -117,6 +117,7 @@ export default function EditFishings() {
 
   return (
       <Container>
+        <br></br>
         <h2>Editing fishing</h2>
         <hr />
       {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}

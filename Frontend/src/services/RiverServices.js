@@ -45,10 +45,17 @@ async function editRiver(id, river) {
         });
 }
 
+async function getPaginator(page,condition){
+    return await HttpService.get('/River/search-paginator/'+page + '?condition=' + condition)
+    .then((response)=>{return  {error: false, message: response.data};})
+    .catch((e)=>{ return {error: true, message: 'Error by searching users '}});
+}
+
 export default {
     get,
     getById,
     deleteRiver,
     addRiver,
-    editRiver
+    editRiver,
+    getPaginator
 };

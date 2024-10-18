@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { Button, Container, Table, Modal } from "react-bootstrap";
+import { Button, Table, Modal, Row , Col, Form, Pagination } from "react-bootstrap";
 import { FaEdit, FaTrash, FaTrophy } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import FishingService from "../../services/FishingServices"; 
 import { RoutesNames } from "../../constants";
 import moment from "moment";
@@ -11,30 +10,38 @@ import useLoading from "../../hooks/useLoading";
 export default function FishingsView(){
 
     const [fishings, setFishings] = useState();
-
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-
     const [fishingToDelete, setFishingToDelete] = useState(null);
-
-    let navigate = useNavigate(); 
+    const [page, setPage] = useState(1);
+    const [condition, setCondition] = useState('');
+    const navigate = useNavigate();
 
     const { showLoading, hideLoading } = useLoading();
 
     async function getFishings(){
         showLoading();
-        await FishingService.get()
-        .then((response)=>{
-            setFishings(response);
-        })
-        .catch((e)=>{console.log(e)});
+        const response = await FishingService.getPaginator(page, condition);
+        hideLoading();
+        if (response.error) {
+            alert(response.message);
+            return;
+        }
+        if (response.message.length === 0) {
+            setPage(page -1);
+            return;
+        }
+        setFishings(response.message);
         hideLoading();
     }
+
+    useEffect(() => {
+        getFishings();
+    }, [page, condition]);
     
     async function deleteFishing(id) {
         showLoading();
         const response = await FishingService.deleteFishing(id);
         hideLoading();
-       
         if(response.error){
             alert(response.message);
             return;
@@ -42,12 +49,7 @@ export default function FishingsView(){
         getFishings();
         setShowDeleteModal(false);
     }
-    useEffect(()=>{
-        getFishings();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[]);
 
-    
     function handleDelete(id) {
         setFishingToDelete(id);
         setShowDeleteModal(true);
@@ -64,8 +66,28 @@ export default function FishingsView(){
         return moment.utc(date).format("DD.MM.YYYY.");
     }
 
+    function changeCondition(e) {
+        if (e.nativeEvent.key === "Enter") {
+            setPage(1);
+            setCondition(e.nativeEvent.srcElement.value);
+            setFishings([]);
+        }
+    }
+
+    function nextPage() {
+        setPage(page + 1);
+    }
+
+    function previousPage() {
+        if (page === 1) {
+            return;
+        }
+        setPage(page - 1);
+    }
+
     return (
-        <Container className="mt-5">
+        <>
+        <br></br>
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1 className="text-primary">
                     <FaTrophy className="me-2" /> Fishing (catches) list
@@ -76,6 +98,18 @@ export default function FishingsView(){
                     Add new fishing
                 </Button>
             </Link>
+            <Row>
+                <Col sm={12} lg={7} md={7}>
+                    <Form.Control
+                        type="text"
+                        name="search"
+                        placeholder="Search fishings by fish, river, user first name or last name [Enter]"
+                        maxLength={255}
+                        defaultValue=""
+                        onKeyUp={changeCondition}
+                    />
+                </Col>
+            </Row>
             <br></br>
             <br></br>
             <Table striped bordered hover responsive>
@@ -87,7 +121,7 @@ export default function FishingsView(){
                         <th>River</th>
                         <th>Quantity</th>
                         <th>Weight</th>
-                        <th>Akcija</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -122,6 +156,18 @@ export default function FishingsView(){
                 </tbody>
             </Table>
 
+            <hr />
+
+            {fishings && fishings.length > 0 && (
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Pagination size="lg">
+                        <Pagination.Prev onClick={previousPage} />
+                        <Pagination.Item disabled>{page}</Pagination.Item>
+                        <Pagination.Next onClick={nextPage} />
+                    </Pagination>
+                </div>
+            )}
+
             <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Confirm Deletion</Modal.Title>
@@ -136,6 +182,6 @@ export default function FishingsView(){
                     </Button>
                 </Modal.Footer>
             </Modal>
-        </Container>
+        </>
     );
 }
