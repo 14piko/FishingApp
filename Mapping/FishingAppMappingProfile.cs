@@ -26,9 +26,19 @@ public class FishingAppMappingProfile : Profile
         CreateMap<River, RiverDTORead>();
         CreateMap<RiverDTORead, River>();
         CreateMap<RiverDTOInsertUpdate, River>();
-        CreateMap<Fish, FishDTORead>();
-        CreateMap<FishDTORead, Fish>();
+
+        CreateMap<Fish, FishDTORead>()
+            .ConvertUsing(entityFish =>
+            new FishDTORead(
+                entityFish.Id,
+                entityFish.Name ?? "",
+                entityFish.HuntStart,
+                entityFish.HuntEnd,
+                entityFish.Description ?? "",
+                FilePathFish(entityFish)));
+
         CreateMap<FishDTOInsertUpdate, Fish>();
+
 
         CreateMap<Fishing, FishingDTORead>()
             .ForMember(dest => dest.UserFirstName, opt => opt.MapFrom(src => src.User.FirstName))
@@ -52,6 +62,21 @@ public class FishingAppMappingProfile : Profile
             string image = Path.Combine(Directory.GetCurrentDirectory()
                 + ds + "wwwroot" + ds + "images" + ds + "users" + ds + e.Id + ".png");
             return File.Exists(image) ? "/images/users/" + e.Id + ".png" : null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static string? FilePathFish(Fish e)
+    {
+        try
+        {
+            var ds = Path.DirectorySeparatorChar;
+            string image = Path.Combine(Directory.GetCurrentDirectory()
+                + ds + "wwwroot" + ds + "images" + ds + "fishes" + ds + e.Id + ".png");
+            return File.Exists(image) ? "/images/fishes/" + e.Id + ".png" : null;
         }
         catch
         {

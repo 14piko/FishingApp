@@ -5,7 +5,8 @@
         string Name,
         DateTime? HuntStart,
         DateTime? HuntEnd,
-        string? Description
+        string? Description,
+        string? Image
         );
 
 }
