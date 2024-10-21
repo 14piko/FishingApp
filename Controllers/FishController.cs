@@ -7,11 +7,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FishingApp.Controllers
 {
-
+    /// <summary>
+    /// This controller manages CRUD operations for the Fish entity.
+    /// </summary>
     [ApiController]
     [Route("api/v1/[controller]")]
     public class FishController(FishingAppContext context, IMapper mapper) : FishingAppController(context, mapper)
     {
+        /// <summary>
+        /// Retrieves all fish from the database.
+        /// </summary>
         [HttpGet]
         public ActionResult<List<FishDTORead>> Get()
         {
@@ -27,10 +32,13 @@ namespace FishingApp.Controllers
             {
                 return BadRequest(new { error = ex.Message });
             }
-
         }
 
-
+        /// <summary>
+        /// Retrieves a fish by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the fish to retrieve.</param>
+        /// <returns>Returns the fish if found; otherwise, returns a not found error.</returns>
         [HttpGet]
         [Route("{id:int}")]
         public ActionResult<FishDTORead> GetById(int id)
@@ -56,6 +64,11 @@ namespace FishingApp.Controllers
             return Ok(_mapper.Map<FishDTORead>(e));
         }
 
+        /// <summary>
+        /// Adds a new fish to the database.
+        /// </summary>
+        /// <param name="fishDto">The DTO object containing the fish data to insert.</param>
+        /// <returns>Returns a success message and the created fish DTO.</returns>
         [HttpPost]
         public IActionResult Post(FishDTOInsertUpdate fishDto)
         {
@@ -74,11 +87,14 @@ namespace FishingApp.Controllers
             {
                 return BadRequest(new { error = ex.Message });
             }
-
-
-
         }
 
+        /// <summary>
+        /// Updates an existing fish by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the fish to update.</param>
+        /// <param name="fishDto">The DTO object containing the updated fish data.</param>
+        /// <returns>Returns a success message if updated; otherwise, returns a not found error.</returns>
         [HttpPut]
         [Route("{id:int}")]
         [Produces("application/json")]
@@ -114,9 +130,13 @@ namespace FishingApp.Controllers
             {
                 return BadRequest(new { error = ex.Message });
             }
-
         }
 
+        /// <summary>
+        /// Deletes a fish by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the fish to delete.</param>
+        /// <returns>Returns a success message if deleted; otherwise, returns a not found error.</returns>
         [HttpDelete]
         [Route("{id:int}")]
         [Produces("application/json")]
@@ -143,7 +163,7 @@ namespace FishingApp.Controllers
                 }
                 _context.Fish.Remove(e);
                 _context.SaveChanges();
-                return Ok(new { poruka = "Successfully deleted!" });
+                return Ok(new { message = "Successfully deleted!" });
             }
             catch (Exception ex)
             {
@@ -151,6 +171,12 @@ namespace FishingApp.Controllers
             }
         }
 
+        /// <summary>
+        /// Searches for fish with pagination and conditions.
+        /// </summary>
+        /// <param name="page">The page number for pagination.</param>
+        /// <param name="condition">The search condition to filter fish.</param>
+        /// <returns>Returns a list of fish matching the search criteria.</returns>
         [HttpGet]
         [Route("search-paginator/{page}")]
         public IActionResult SearchFishPaginator(int page, string condition = "")
@@ -173,13 +199,19 @@ namespace FishingApp.Controllers
             }
         }
 
+        /// <summary>
+        /// Sets an image for a fish by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the fish to set the image for.</param>
+        /// <param name="image">The DTO object containing the base64 image data.</param>
+        /// <returns>Returns a success message if the image is uploaded successfully; otherwise, returns an error.</returns>
         [HttpPut]
         [Route("set-image/{id:int}")]
         public IActionResult SetImage(int id, ImageDTO image)
         {
             if (id <= 0)
             {
-                return BadRequest("Id must be greater then zero (0)");
+                return BadRequest("Id must be greater than zero (0)");
             }
             if (image.Base64 == null || image.Base64?.Length == 0)
             {
@@ -188,7 +220,7 @@ namespace FishingApp.Controllers
             var f = _context.Fish.Find(id);
             if (f == null)
             {
-                return BadRequest("Fish with id: " + id + " doesnt exist!");
+                return BadRequest("Fish with id: " + id + " doesn't exist!");
             }
             try
             {

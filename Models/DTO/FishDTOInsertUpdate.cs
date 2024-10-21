@@ -2,6 +2,9 @@
 
 namespace FishingApp.Models.DTO
 {
+    /// <summary>
+    /// Represents a Data Transfer Object (DTO) for inserting or updating fish data.
+    /// </summary>
     public record FishDTOInsertUpdate(
        [Required(ErrorMessage = "Name is required!")]
        string Name,

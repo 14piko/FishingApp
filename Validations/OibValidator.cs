@@ -3,6 +3,10 @@ using System.Text.RegularExpressions;
 
 namespace FishingApp.Validations
 {
+    /// <summary>
+    /// Custom validation attribute for validating Croatian OIB (Personal Identification Number).
+    /// It checks if the OIB is in the correct format (11 digits) and performs a checksum validation.
+    /// </summary>
     public class OibValidator : ValidationAttribute
     {
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)

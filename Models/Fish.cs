@@ -2,6 +2,10 @@
 
 namespace FishingApp.Models
 {
+    /// <summary>
+    /// Represents a fish entity in the FishingApp.
+    /// Inherits from the Entity class and includes properties such as Name, HuntStart, HuntEnd, and Description.
+    /// </summary>
     public class Fish : Entity
     {
         [Column("name")]

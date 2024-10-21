@@ -3,6 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FishingApp.Models.DTO
 {
+    /// <summary>
+    /// Represents a Data Transfer Object (DTO) for inserting or updating user information.
+    /// Contains properties for the user's first name, last name, email, password, OIB, license number, and role.
+    /// Validation attributes ensure required fields are filled and OIB is valid.
+    /// </summary>
     public record UserDTOInsertUpdate(
         [Required(ErrorMessage = "First name is required!")]
         string FirstName,

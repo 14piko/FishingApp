@@ -10,27 +10,31 @@ using System.Security.Claims;
 
 namespace EdunovaAPP.Controllers
 {
+    /// <summary>
+    /// Controller for managing fishing operations such as retrieval, creation, updating, and deletion.
+    /// Allows authorized users to access the data.
+    /// </summary>
     [ApiController]
     [Route("api/v1/[controller]")]
     public class FishingController(FishingAppContext context, IMapper mapper) : FishingAppController(context, mapper)
     {
-
+        /// <summary>
+        /// Retrieves all fishing records, but returns different results depending on the user role (Admin or User).
+        /// </summary>
         [HttpGet]
-        [Authorize] 
+        [Authorize]
         public ActionResult<List<FishingDTORead>> Get()
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(new { error = ModelState });
             }
-      
-            
+
             try
             {
-                var userEmail = User.FindFirst(ClaimTypes.Name)?.Value; 
+                var userEmail = User.FindFirst(ClaimTypes.Name)?.Value;
                 var role = User.FindFirst(ClaimTypes.Role)?.Value;
 
-                
                 var fishings = role == "Admin"
                     ? _context.Fishing.Include(f => f.User).Include(f => f.Fish).Include(f => f.River).ToList()
                     : _context.Fishing.Include(f => f.User).Include(f => f.Fish).Include(f => f.River)
@@ -45,7 +49,9 @@ namespace EdunovaAPP.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Retrieves a specific fishing record by ID.
+        /// </summary>
         [HttpGet]
         [Route("{id:int}")]
         public ActionResult<FishingDTOInsertUpdate> GetById(int id)
@@ -75,6 +81,9 @@ namespace EdunovaAPP.Controllers
             return Ok(_mapper.Map<FishingDTOInsertUpdate>(e));
         }
 
+        /// <summary>
+        /// Creates a new fishing record based on the submitted DTO object.
+        /// </summary>
         [HttpPost]
         public IActionResult Post(FishingDTOInsertUpdate dto)
         {
@@ -153,7 +162,7 @@ namespace EdunovaAPP.Controllers
             try
             {
                 var e = _mapper.Map<Fishing>(dto);
-                e.User = es;  
+                e.User = es;
                 e.Fish = fs;
                 e.River = rv;
                 _context.Fishing.Add(e);
@@ -166,7 +175,9 @@ namespace EdunovaAPP.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Updates an existing fishing record by ID.
+        /// </summary>
         [HttpPut]
         [Route("{id:int}")]
         [Produces("application/json")]
@@ -184,8 +195,6 @@ namespace EdunovaAPP.Controllers
                 return Unauthorized(new { error = "Unauthorized request!" });
             }
 
-
-
             try
             {
                 Fishing? e;
@@ -202,7 +211,7 @@ namespace EdunovaAPP.Controllers
                     return NotFound(new { error = "Fishing doesn't exist in database!" });
                 }
 
-                User? currentUser; 
+                User? currentUser;
                 try
                 {
                     currentUser = _context.User.FirstOrDefault(u => u.Email == emailClaim);
@@ -235,7 +244,6 @@ namespace EdunovaAPP.Controllers
                     return BadRequest(new { error = "Unauthorized role!" });
                 }
 
-
                 Fish? fh;
                 try
                 {
@@ -264,7 +272,6 @@ namespace EdunovaAPP.Controllers
                     return NotFound(new { error = "River on fishing doesn't exist in database!" });
                 }
 
-
                 e = _mapper.Map(dto, e);
                 e.User = es;
                 e.Fish = fh;
@@ -279,6 +286,9 @@ namespace EdunovaAPP.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes a fishing record by ID.
+        /// </summary>
         [HttpDelete]
         [Route("{id:int}")]
         [Produces("application/json")]
@@ -313,10 +323,14 @@ namespace EdunovaAPP.Controllers
             }
         }
 
+        /// <summary>
+        /// Searches for fishing records using pagination, filtered by condition.
+        /// </summary>
         [HttpGet]
         [Route("search-paginator/{page}")]
         public IActionResult SearchFishingPaginator(int page, string condition = "")
         {
+
             const int perPage = 8;
 
             try

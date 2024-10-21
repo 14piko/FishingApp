@@ -2,6 +2,10 @@
 
 namespace FishingApp.Models
 {
+    /// <summary>
+    /// Represents a river in the FishingApp.
+    /// Inherits from the Entity class and includes properties such as Name and Length.
+    /// </summary>
     public class River : Entity
     {
         [Column("name")]

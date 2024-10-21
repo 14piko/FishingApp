@@ -8,17 +8,31 @@ using System.Text;
 
 namespace FishingApp.Controllers
 {
+    /// <summary>
+    /// This controller provides authorization functionality.
+    /// It allows users to log in and generate JWT tokens based on valid credentials.
+    /// </summary>
     [ApiController]
     [Route("api/v1/[controller]")]
     public class AuthorizationController : ControllerBase
     {
         private readonly FishingAppContext _context;
 
+        /// <summary>
+        /// Constructor for the AuthorizationController that initializes the database context.
+        /// </summary>
+        /// <param name="context">The database context used for accessing user data.</param>
         public AuthorizationController(FishingAppContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Generates a JWT token for the user after a successful login.
+        /// It checks the user's credentials in the database and creates a JWT token if they are valid.
+        /// </summary>
+        /// <param name="loginDTO">DTO object containing login data (email and password).</param>
+        /// <returns>Returns a JWT token if the credentials are valid; otherwise, returns an error.</returns>
         [HttpPost("token")]
         public IActionResult GenerateToken([FromBody] LoginDTO loginDTO)
         {
@@ -41,7 +55,6 @@ namespace FishingApp.Controllers
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
-
             var key = Encoding.UTF8.GetBytes("MojKljucKojijeJakoTajan i dovoljno dugačak da se može koristiti");
 
             var claims = new List<Claim>

@@ -7,10 +7,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FishingApp.Controllers
 {
+    /// <summary>
+    /// Controller for managing users with operations such as retrieving, creating, updating, and deleting users.
+    /// </summary>
     [ApiController]
     [Route("api/v1/[controller]")]
     public class UserController(FishingAppContext context, IMapper mapper) : FishingAppController(context, mapper)
     {
+        /// <summary>
+        /// Retrieves all users.
+        /// </summary>
         [HttpGet]
         public ActionResult<List<UserDTORead>> Get()
         {
@@ -28,6 +34,9 @@ namespace FishingApp.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves a user by ID.
+        /// </summary>
         [HttpGet]
         [Route("{id:int}")]
         public ActionResult<UserDTORead> GetById(int id)
@@ -52,6 +61,9 @@ namespace FishingApp.Controllers
             return Ok(_mapper.Map<UserDTORead>(e));
         }
 
+        /// <summary>
+        /// Creates a new user based on the submitted DTO object.
+        /// </summary>
         [HttpPost]
         public IActionResult Post(UserDTOInsertUpdate userDTO)
         {
@@ -70,8 +82,7 @@ namespace FishingApp.Controllers
             try
             {
                 var e = _mapper.Map<User>(userDTO);
-
-                e.Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password); // Set the hashed password
+                e.Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password);
 
                 _context.User.Add(e);
                 _context.SaveChanges();
@@ -83,20 +94,20 @@ namespace FishingApp.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates an existing user by ID.
+        /// </summary>
         [HttpPut]
         [Route("{id:int}")]
         [Produces("application/json")]
         public IActionResult Put(int id, UserDTOInsertUpdate userDTO)
         {
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(new { error = ModelState });
             }
 
-           
-            var existingUser = _context.User
-                .FirstOrDefault(u => u.Oib == userDTO.Oib && u.Id != id);
+            var existingUser = _context.User.FirstOrDefault(u => u.Oib == userDTO.Oib && u.Id != id);
 
             if (existingUser != null)
             {
@@ -105,7 +116,6 @@ namespace FishingApp.Controllers
 
             try
             {
-             
                 User? existingEntity = _context.User.Find(id);
 
                 if (existingEntity == null)
@@ -113,14 +123,13 @@ namespace FishingApp.Controllers
                     return NotFound(new { error = "User doesn't exist in database!" });
                 }
 
-          
                 _mapper.Map(userDTO, existingEntity);
 
                 if (!string.IsNullOrEmpty(userDTO.Password))
                 {
                     existingEntity.Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password);
                 }
-            
+
                 _context.User.Update(existingEntity);
                 _context.SaveChanges();
 
@@ -132,6 +141,9 @@ namespace FishingApp.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes a user by ID.
+        /// </summary>
         [HttpDelete]
         [Route("{id:int}")]
         [Produces("application/json")]
@@ -166,6 +178,9 @@ namespace FishingApp.Controllers
             }
         }
 
+        /// <summary>
+        /// Searches for users using pagination, filtered by condition.
+        /// </summary>
         [HttpGet]
         [Route("search-paginator/{page}")]
         public IActionResult SearchUserPaginator(int page, string condition = "")
@@ -189,13 +204,16 @@ namespace FishingApp.Controllers
             }
         }
 
+        /// <summary>
+        /// Sets the user's image by ID.
+        /// </summary>
         [HttpPut]
         [Route("set-image/{id:int}")]
         public IActionResult SetImage(int id, ImageDTO image)
         {
             if (id <= 0)
             {
-                return BadRequest("Id must be greater then zero (0)");
+                return BadRequest("Id must be greater than zero (0)");
             }
             if (image.Base64 == null || image.Base64?.Length == 0)
             {
@@ -204,7 +222,7 @@ namespace FishingApp.Controllers
             var u = _context.User.Find(id);
             if (u == null)
             {
-                return BadRequest("User with id: " + id + " doesnt exist!");
+                return BadRequest("User with id: " + id + " doesn't exist!");
             }
             try
             {

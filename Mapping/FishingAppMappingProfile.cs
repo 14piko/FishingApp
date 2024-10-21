@@ -4,6 +4,9 @@ using FishingApp.Models;
 
 public class FishingAppMappingProfile : Profile
 {
+    /// <summary>
+    /// Defines the mapping configuration for the FishingApp domain objects to their respective DTOs.
+    /// </summary>
     public FishingAppMappingProfile()
     {
         CreateMap<User, UserDTORead>()
@@ -22,7 +25,7 @@ public class FishingAppMappingProfile : Profile
         CreateMap<UserDTOInsertUpdate, User>()
             .ForMember(dest => dest.Password, opt => opt.Ignore());
 
-    
+
         CreateMap<River, RiverDTORead>();
         CreateMap<RiverDTORead, River>();
         CreateMap<RiverDTOInsertUpdate, River>();
@@ -54,6 +57,10 @@ public class FishingAppMappingProfile : Profile
         CreateMap<FishingDTOInsertUpdate, Fishing>();
     }
 
+    /// <summary>
+    /// Retrieves the file path for a user image based on the user's ID.
+    /// </summary>
+    /// <param name="e">The user object to get the file path for.</param>
     private static string? FilePath(User e)
     {
         try
@@ -69,6 +76,10 @@ public class FishingAppMappingProfile : Profile
         }
     }
 
+    /// <summary>
+    /// Retrieves the file path for a fish image based on the fish's ID.
+    /// </summary>
+    /// <param name="e">The fish object to get the file path for.</param>
     private static string? FilePathFish(Fish e)
     {
         try

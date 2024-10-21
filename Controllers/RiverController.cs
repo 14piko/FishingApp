@@ -7,11 +7,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FishingApp.Controllers
 {
-
+    /// <summary>
+    /// Controller for managing river operations such as retrieval, creation, updating, and deletion.
+    /// </summary>
     [ApiController]
     [Route("api/v1/[controller]")]
     public class RiverController(FishingAppContext context, IMapper mapper) : FishingAppController(context, mapper)
     {
+        /// <summary>
+        /// Retrieves all rivers.
+        /// </summary>
         [HttpGet]
         public ActionResult<List<RiverDTORead>> Get()
         {
@@ -27,10 +32,11 @@ namespace FishingApp.Controllers
             {
                 return BadRequest(new { error = ex.Message });
             }
-
         }
 
-
+        /// <summary>
+        /// Retrieves a specific river by ID.
+        /// </summary>
         [HttpGet]
         [Route("{id:int}")]
         public ActionResult<RiverDTORead> GetById(int id)
@@ -56,6 +62,9 @@ namespace FishingApp.Controllers
             return Ok(_mapper.Map<RiverDTORead>(e));
         }
 
+        /// <summary>
+        /// Creates a new river based on the submitted DTO object.
+        /// </summary>
         [HttpPost]
         public IActionResult Post(RiverDTOInsertUpdate riverDto)
         {
@@ -74,11 +83,11 @@ namespace FishingApp.Controllers
             {
                 return BadRequest(new { error = ex.Message });
             }
-
-
-
         }
 
+        /// <summary>
+        /// Updates an existing river by ID.
+        /// </summary>
         [HttpPut]
         [Route("{id:int}")]
         [Produces("application/json")]
@@ -114,9 +123,11 @@ namespace FishingApp.Controllers
             {
                 return BadRequest(new { error = ex.Message });
             }
-
         }
 
+        /// <summary>
+        /// Deletes a river by ID.
+        /// </summary>
         [HttpDelete]
         [Route("{id:int}")]
         [Produces("application/json")]
@@ -143,7 +154,7 @@ namespace FishingApp.Controllers
                 }
                 _context.River.Remove(e);
                 _context.SaveChanges();
-                return Ok(new { poruka = "Successfully deleted!" });
+                return Ok(new { message = "Successfully deleted!" });
             }
             catch (Exception ex)
             {
@@ -151,11 +162,15 @@ namespace FishingApp.Controllers
             }
         }
 
+        /// <summary>
+        /// Searches for rivers using pagination, filtered by condition.
+        /// </summary>
         [HttpGet]
         [Route("search-paginator/{page}")]
         public IActionResult SearchRiverPaginator(int page, string condition = "")
         {
             var perPage = 6;
+
             condition = condition.ToLower();
             try
             {

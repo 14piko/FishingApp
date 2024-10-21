@@ -2,6 +2,10 @@
 
 namespace FishingApp.Models
 {
+    /// <summary>
+    /// Represents a user in the FishingApp.
+    /// Inherits from the Entity class and includes properties such as Email, Password, First Name, Last Name, Role, OIB, and License Number.
+    /// </summary>
     public class User : Entity
     {
         [Column("email")]
@@ -17,7 +21,7 @@ namespace FishingApp.Models
         public string? LastName { get; set; }
 
         [Column("role")]
-        public string? Role { get; set; } 
+        public string? Role { get; set; }
 
         [Column("oib")]
         public string? Oib { get; set; }

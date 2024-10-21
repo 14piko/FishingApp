@@ -6,16 +6,20 @@ using System.Text;
 
 namespace FishingApp.Extensions
 {
+    /// <summary>
+    /// This static class contains extension methods for configuring services in the FishingApp.
+    /// It includes methods for setting up Swagger, CORS policies, and JWT-based authentication.
+    /// </summary>
     public static class FishingAppExtensions
     {
         /// <summary>
-        /// Adds Swagger generation with custom settings for the Edunova API.
+        /// Adds Swagger generation with custom settings for the FishingApp API.
         /// </summary>
         /// <param name="Services">The service collection to add the Swagger generation to.</param>
         public static void AddFishingAppSwaggerGen(this IServiceCollection Services)
         {
             Services.AddSwaggerGen(sgo =>
-            { 
+            {
                 var o = new Microsoft.OpenApi.Models.OpenApiInfo()
                 {
                     Title = "FishingApp API",
@@ -25,21 +29,20 @@ namespace FishingApp.Extensions
                         Email = "mirko.eres1@gmail.com",
                         Name = "Mirko Ereš"
                     },
-                    Description = "Ovo je dokumentacija za FishingApp API",
+                    Description = "This is documentation for FishingApp API",
                     License = new Microsoft.OpenApi.Models.OpenApiLicense()
                     {
-                        Name = "Edukacijska licenca"
+                        Name = "Educational license"
                     }
                 };
                 sgo.SwaggerDoc("v1", o);
 
-                
-
                 sgo.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Description = @"JWT Autorizacija radi tako da se prvo na ruti /api/v1/Autorizacija/token.  
-                          autorizirate i dobijete token (bez navodnika). Upišite 'Bearer' [razmak] i dobiveni token.
-                          Primjer: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE2OTc3MTc2MjksImV4cCI6MTY5Nzc0NjQyOSwiaWF0IjoxNjk3NzE3NjI5fQ.PN7YPayllTrWESc6mdyp3XCQ1wp3FfDLZmka6_dAJsY'",
+                    Description = @"JWT authorization works by first authenticating at the route /api/v1/Authorization/token.  
+                    You receive a token (without quotes). Enter 'Bearer' [space] and the received token.
+                    Example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE2OTc3MTc2MjksImV4cCI6MTY5Nzc0NjQyOSwiaWF0IjoxNjk3NzE3NjI5fQ.PN7YPayllTrWESc6mdyp3XCQ1wp3FfDLZmka6_dAJsY'",
+
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey,
@@ -47,31 +50,27 @@ namespace FishingApp.Extensions
                 });
 
                 sgo.AddSecurityRequirement(new OpenApiSecurityRequirement()
-                  {
+                {
+                    {
+                        new OpenApiSecurityScheme
                         {
-                          new OpenApiSecurityScheme
-                          {
                             Reference = new OpenApiReference
-                              {
+                            {
                                 Type = ReferenceType.SecurityScheme,
                                 Id = "Bearer"
-                              },
-                              Scheme = "oauth2",
-                              Name = "Bearer",
-                              In = ParameterLocation.Header,
-
                             },
-                            new List<string>()
-                          }
-                    });
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header,
+                        },
+                        new List<string>()
+                    }
+                });
 
-        
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 sgo.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
-
             });
-
         }
 
         /// <summary>
@@ -86,9 +85,7 @@ namespace FishingApp.Extensions
                     builder =>
                         builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
                 );
-
             });
-
         }
 
         /// <summary>
@@ -113,8 +110,6 @@ namespace FishingApp.Extensions
                     ValidateIssuerSigningKey = false
                 };
             });
-
         }
-
     }
 }
