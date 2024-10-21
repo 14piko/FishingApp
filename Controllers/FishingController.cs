@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using FishingApp.Controllers;
 using FishingApp.Data;
 using FishingApp.Models;
 using FishingApp.Models.DTO;
@@ -8,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace EdunovaAPP.Controllers
+namespace FishingApp.Controllers
 {
     /// <summary>
     /// Controller for managing fishing operations such as retrieval, creation, updating, and deletion.

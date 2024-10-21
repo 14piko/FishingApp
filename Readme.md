@@ -40,14 +40,14 @@
   - [#ctor()](#M-FishingAppMappingProfile-#ctor 'FishingAppMappingProfile.#ctor')
   - [FilePath(e)](#M-FishingAppMappingProfile-FilePath-FishingApp-Models-User- 'FishingAppMappingProfile.FilePath(FishingApp.Models.User)')
   - [FilePathFish(e)](#M-FishingAppMappingProfile-FilePathFish-FishingApp-Models-Fish- 'FishingAppMappingProfile.FilePathFish(FishingApp.Models.Fish)')
-- [FishingController](#T-EdunovaAPP-Controllers-FishingController 'EdunovaAPP.Controllers.FishingController')
-  - [#ctor()](#M-EdunovaAPP-Controllers-FishingController-#ctor-FishingApp-Data-FishingAppContext,AutoMapper-IMapper- 'EdunovaAPP.Controllers.FishingController.#ctor(FishingApp.Data.FishingAppContext,AutoMapper.IMapper)')
-  - [Delete()](#M-EdunovaAPP-Controllers-FishingController-Delete-System-Int32- 'EdunovaAPP.Controllers.FishingController.Delete(System.Int32)')
-  - [Get()](#M-EdunovaAPP-Controllers-FishingController-Get 'EdunovaAPP.Controllers.FishingController.Get')
-  - [GetById()](#M-EdunovaAPP-Controllers-FishingController-GetById-System-Int32- 'EdunovaAPP.Controllers.FishingController.GetById(System.Int32)')
-  - [Post()](#M-EdunovaAPP-Controllers-FishingController-Post-FishingApp-Models-DTO-FishingDTOInsertUpdate- 'EdunovaAPP.Controllers.FishingController.Post(FishingApp.Models.DTO.FishingDTOInsertUpdate)')
-  - [Put()](#M-EdunovaAPP-Controllers-FishingController-Put-System-Int32,FishingApp-Models-DTO-FishingDTOInsertUpdate- 'EdunovaAPP.Controllers.FishingController.Put(System.Int32,FishingApp.Models.DTO.FishingDTOInsertUpdate)')
-  - [SearchFishingPaginator()](#M-EdunovaAPP-Controllers-FishingController-SearchFishingPaginator-System-Int32,System-String- 'EdunovaAPP.Controllers.FishingController.SearchFishingPaginator(System.Int32,System.String)')
+- [FishingController](#T-FishingApp-Controllers-FishingController 'FishingApp.Controllers.FishingController')
+  - [#ctor()](#M-FishingApp-Controllers-FishingController-#ctor-FishingApp-Data-FishingAppContext,AutoMapper-IMapper- 'FishingApp.Controllers.FishingController.#ctor(FishingApp.Data.FishingAppContext,AutoMapper.IMapper)')
+  - [Delete()](#M-FishingApp-Controllers-FishingController-Delete-System-Int32- 'FishingApp.Controllers.FishingController.Delete(System.Int32)')
+  - [Get()](#M-FishingApp-Controllers-FishingController-Get 'FishingApp.Controllers.FishingController.Get')
+  - [GetById()](#M-FishingApp-Controllers-FishingController-GetById-System-Int32- 'FishingApp.Controllers.FishingController.GetById(System.Int32)')
+  - [Post()](#M-FishingApp-Controllers-FishingController-Post-FishingApp-Models-DTO-FishingDTOInsertUpdate- 'FishingApp.Controllers.FishingController.Post(FishingApp.Models.DTO.FishingDTOInsertUpdate)')
+  - [Put()](#M-FishingApp-Controllers-FishingController-Put-System-Int32,FishingApp-Models-DTO-FishingDTOInsertUpdate- 'FishingApp.Controllers.FishingController.Put(System.Int32,FishingApp.Models.DTO.FishingDTOInsertUpdate)')
+  - [SearchFishingPaginator()](#M-FishingApp-Controllers-FishingController-SearchFishingPaginator-System-Int32,System-String- 'FishingApp.Controllers.FishingController.SearchFishingPaginator(System.Int32,System.String)')
 - [FishingDTOInsertUpdate](#T-FishingApp-Models-DTO-FishingDTOInsertUpdate 'FishingApp.Models.DTO.FishingDTOInsertUpdate')
   - [#ctor()](#M-FishingApp-Models-DTO-FishingDTOInsertUpdate-#ctor-System-Nullable{System-DateTime},System-Nullable{System-Int32},System-Nullable{System-Int32},System-Nullable{System-Int32},System-Nullable{System-Int32},System-Nullable{System-Decimal}- 'FishingApp.Models.DTO.FishingDTOInsertUpdate.#ctor(System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal})')
 - [FishingDTORead](#T-FishingApp-Models-DTO-FishingDTORead 'FishingApp.Models.DTO.FishingDTORead')
@@ -537,19 +537,19 @@ Retrieves the file path for a fish image based on the fish's ID.
 | ---- | ---- | ----------- |
 | e | [FishingApp.Models.Fish](#T-FishingApp-Models-Fish 'FishingApp.Models.Fish') | The fish object to get the file path for. |
 
-<a name='T-EdunovaAPP-Controllers-FishingController'></a>
+<a name='T-FishingApp-Controllers-FishingController'></a>
 ## FishingController `type`
 
 ##### Namespace
 
-EdunovaAPP.Controllers
+FishingApp.Controllers
 
 ##### Summary
 
 Controller for managing fishing operations such as retrieval, creation, updating, and deletion.
 Allows authorized users to access the data.
 
-<a name='M-EdunovaAPP-Controllers-FishingController-#ctor-FishingApp-Data-FishingAppContext,AutoMapper-IMapper-'></a>
+<a name='M-FishingApp-Controllers-FishingController-#ctor-FishingApp-Data-FishingAppContext,AutoMapper-IMapper-'></a>
 ### #ctor() `constructor`
 
 ##### Summary
@@ -561,7 +561,7 @@ Allows authorized users to access the data.
 
 This constructor has no parameters.
 
-<a name='M-EdunovaAPP-Controllers-FishingController-Delete-System-Int32-'></a>
+<a name='M-FishingApp-Controllers-FishingController-Delete-System-Int32-'></a>
 ### Delete() `method`
 
 ##### Summary
@@ -572,7 +572,7 @@ Deletes a fishing record by ID.
 
 This method has no parameters.
 
-<a name='M-EdunovaAPP-Controllers-FishingController-Get'></a>
+<a name='M-FishingApp-Controllers-FishingController-Get'></a>
 ### Get() `method`
 
 ##### Summary
@@ -583,7 +583,7 @@ Retrieves all fishing records, but returns different results depending on the us
 
 This method has no parameters.
 
-<a name='M-EdunovaAPP-Controllers-FishingController-GetById-System-Int32-'></a>
+<a name='M-FishingApp-Controllers-FishingController-GetById-System-Int32-'></a>
 ### GetById() `method`
 
 ##### Summary
@@ -594,7 +594,7 @@ Retrieves a specific fishing record by ID.
 
 This method has no parameters.
 
-<a name='M-EdunovaAPP-Controllers-FishingController-Post-FishingApp-Models-DTO-FishingDTOInsertUpdate-'></a>
+<a name='M-FishingApp-Controllers-FishingController-Post-FishingApp-Models-DTO-FishingDTOInsertUpdate-'></a>
 ### Post() `method`
 
 ##### Summary
@@ -605,7 +605,7 @@ Creates a new fishing record based on the submitted DTO object.
 
 This method has no parameters.
 
-<a name='M-EdunovaAPP-Controllers-FishingController-Put-System-Int32,FishingApp-Models-DTO-FishingDTOInsertUpdate-'></a>
+<a name='M-FishingApp-Controllers-FishingController-Put-System-Int32,FishingApp-Models-DTO-FishingDTOInsertUpdate-'></a>
 ### Put() `method`
 
 ##### Summary
@@ -616,7 +616,7 @@ Updates an existing fishing record by ID.
 
 This method has no parameters.
 
-<a name='M-EdunovaAPP-Controllers-FishingController-SearchFishingPaginator-System-Int32,System-String-'></a>
+<a name='M-FishingApp-Controllers-FishingController-SearchFishingPaginator-System-Int32,System-String-'></a>
 ### SearchFishingPaginator() `method`
 
 ##### Summary
