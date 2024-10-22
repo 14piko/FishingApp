@@ -1,0 +1,25 @@
+.error-list {
+    padding-left: 20px;
+  }
+  
+  .error-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+  
+  .error-icon {
+    margin-right: 10px;
+    color: red;
+    font-size: 20px;
+  }
+  
+  .modal-header.bg-danger {
+    background-color: #d9534f; /* Bootstrap danger color */
+  }
+  
+  .modal-footer .btn-danger {
+    background-color: #c9302c;
+    border-color: #ac2925;
+  }
