@@ -17,7 +17,9 @@ export const RoutesNames = {
     NEW_FISHING: '/fishings/new',
     EDIT_FISHING: '/fishings/:id',
 
-    LOGIN: '/login'
+    LOGIN: '/login',
+
+    ER_DIAGRAM: '/er-diagram'
 };
 
 export const APP_URL = 'https://piko307-001-site1.gtempurl.com';

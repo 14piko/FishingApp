@@ -26,6 +26,7 @@ export default function NavBar() {
                     <Nav>
                         <Nav.Link onClick={() => navigate(RoutesNames.HOME)}>Home</Nav.Link>
                         <Nav.Link onClick={() => OpenSwaggerURL()}>API Docs</Nav.Link>
+                        <Nav.Link onClick={() => navigate(RoutesNames.ER_DIAGRAM)}>ER Diagram</Nav.Link>
                         {isLoggedIn && (
                         <NavDropdown title="Programs" id="basic-nav-dropdown">
                             {userRole === 'Admin' && (

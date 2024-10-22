@@ -22,6 +22,7 @@ import ErrorModal from './components/ErrorModal';
 import useError from "./hooks/useError";
 import Login from "./pages/Login";
 import PrivateRoute from './components/PrivateRoute';
+import ERDiagram from './components/ErDiagram'; 
 
 function App() {
   const { errors, showErrorModal, hideError } = useError();
@@ -34,6 +35,7 @@ function App() {
         <Routes>
           <Route path={RoutesNames.HOME} element={<Homepage />} />
           <Route path={RoutesNames.LOGIN} element={<Login />} />
+          <Route path={RoutesNames.ER_DIAGRAM} element={<ERDiagram />} />
 
           {/* Privatne rute za administratore */}
           <Route element={<PrivateRoute allowedRoles={['Admin']} />}>
