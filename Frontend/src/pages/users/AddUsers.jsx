@@ -81,27 +81,27 @@ export default function AddUsers() {
         <Form onSubmit={doSubmit}>
             <Form.Group controlId="firstName">
                 <Form.Label>First name</Form.Label>
-                <Form.Control type="text" name="firstName" required />
+                <Form.Control type="text" name="firstName" placeholder="Enter user first name" required />
             </Form.Group>
 
             <Form.Group controlId="lastName">
                 <Form.Label>Last name</Form.Label>
-                <Form.Control type="text" name="lastName" required />
+                <Form.Control type="text" name="lastName" placeholder="Enter user last name" required />
             </Form.Group>
 
             <Form.Group controlId="email">
                 <Form.Label>E-mail</Form.Label>
-                <Form.Control type="email" name="email" required />
+                <Form.Control type="email" name="email" placeholder="Enter user email" required />
             </Form.Group>
 
             <Form.Group controlId="password">
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" name="password" required />
+                <Form.Control type="password" name="password" placeholder="Enter password" required />
             </Form.Group>
 
             <Form.Group controlId="repeatPassword">
                     <Form.Label>Repeat password</Form.Label>
-                    <Form.Control type="password" name="repeatPassword" required />
+                    <Form.Control type="password" name="repeatPassword" placeholder="Enter repeat password" required />
                 </Form.Group>
 
             <Form.Group controlId="role">
@@ -114,12 +114,12 @@ export default function AddUsers() {
 
             <Form.Group controlId="oib">
                 <Form.Label>OIB</Form.Label>
-                <Form.Control type="number" name="oib" required />
+                <Form.Control type="number" name="oib" placeholder="Enter user OIB" required />
             </Form.Group>
 
             <Form.Group controlId="licenseNumber">
                 <Form.Label>License number</Form.Label>
-                <Form.Control type="number" name="licenseNumber" required />
+                <Form.Control type="number" name="licenseNumber" placeholder="Enter user license number"  required />
             </Form.Group>
 
             <hr />

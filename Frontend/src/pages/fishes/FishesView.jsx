@@ -12,7 +12,11 @@ import defaultFishImage from '../../assets/defaultFish.png';
 export default function FishesView() {
     const [fish, setFishes] = useState([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showDescriptionModal, setShowDescriptionModal] = useState(false);
+    const [showImageModal, setShowImageModal] = useState(false);
     const [fishToDelete, setFishToDelete] = useState(null);
+    const [fishDescription, setFishDescription] = useState(''); 
+    const [selectedImage, setSelectedImage] = useState(''); 
     const [page, setPage] = useState(1);
     const [condition, setCondition] = useState('');
 
@@ -87,11 +91,20 @@ export default function FishesView() {
     }
 
     function image(fishes) {
-        console.log(fishes.image)
         if (fishes.image != null) {
             return APP_URL + fishes.image + `?${Date.now()}`;
         }
         return defaultFishImage;
+    }
+
+    function showFullDescription(description) {
+        setFishDescription(description);
+        setShowDescriptionModal(true);
+    }
+
+    function openImageModal(fish) {
+        setSelectedImage(image(fish));
+        setShowImageModal(true); 
     }
 
     return (
@@ -131,6 +144,7 @@ export default function FishesView() {
                                         alt={fish.name} 
                                         className="img-fluid fish-image" 
                                         style={{ maxWidth: '105%', maxHeight: '105%', borderRadius: '10px', objectFit: 'cover', marginTop: '10px', marginLeft: '10px' }} 
+                                        onClick={() => openImageModal(fish)} 
                                     />
                                 </Col>
                                 <Col md={8}>
@@ -139,7 +153,21 @@ export default function FishesView() {
                                             <span className="text-info fs-4">{fish.name}</span>
                                             <Badge bg="primary">{formatDate(fish.huntStart)} - {formatDate(fish.huntEnd)}</Badge>
                                         </Card.Title>
-                                        <Card.Text className="fish-description">{fish.description}</Card.Text>
+                                        <Card.Text className="fish-description">
+                                            {fish.description.length > 100 ? (
+                                                <>
+                                                    {`${fish.description.substring(0, 90)}... `}
+                                                    <Button 
+                                                        variant="link" 
+                                                        onClick={() => showFullDescription(fish.description)} 
+                                                        className="p-0">
+                                                        Show more
+                                                    </Button>
+                                                </>
+                                            ) : (
+                                                fish.description
+                                            )}
+                                        </Card.Text>
                                         <div className="d-flex justify-content-end">
                                             <Button 
                                                 variant="outline-success" 
@@ -175,6 +203,20 @@ export default function FishesView() {
                 </div>
             )}
 
+            <Modal show={showDescriptionModal} onHide={() => setShowDescriptionModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Full description</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>{fishDescription}</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowDescriptionModal(false)}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
             <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Confirm deletion</Modal.Title>
@@ -186,6 +228,20 @@ export default function FishesView() {
                     </Button>
                     <Button variant="danger" onClick={confirmDelete}>
                         Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showImageModal} onHide={() => setShowImageModal(false)} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Image</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="text-center">
+                    <img src={selectedImage} alt="Enlarged" className="img-fluid" style={{ maxHeight: '80vh', maxWidth: '100%' }} />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowImageModal(false)}>
+                        Close
                     </Button>
                 </Modal.Footer>
             </Modal>

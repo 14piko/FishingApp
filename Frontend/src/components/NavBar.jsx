@@ -9,7 +9,7 @@ import useAuth from '../hooks/useAuth';
 
 export default function NavBar() {
     const navigate = useNavigate();
-    const { logout, isLoggedIn, userRole } = useAuth();
+    const { logout, isLoggedIn, userRole, userFirstName, userLastName } = useAuth();
 
     function OpenSwaggerURL() {
         window.open(APP_URL + "/swagger/index.html", "_blank");
@@ -36,14 +36,16 @@ export default function NavBar() {
                                 <NavDropdown.Item onClick={() => navigate(RoutesNames.RIVER_VIEW)}>Rivers</NavDropdown.Item>
                             </>
                             )}
-                            {/* Prikaži samo "Fishings" za usera */}
                             <NavDropdown.Item onClick={() => navigate(RoutesNames.FISHING_VIEW)}>Fishings</NavDropdown.Item>
                         </NavDropdown>
                         )}
                     </Nav>
                     <Nav className="ms-auto"> 
                         {isLoggedIn ? (
-                            <Nav.Link onClick={logout}>Log out</Nav.Link>
+                            <>
+                                <Nav.Link disabled>Welcome, {userFirstName} {userLastName}</Nav.Link>
+                                <Nav.Link onClick={logout}>Log out</Nav.Link>
+                            </>
                         ) : (
                             <Nav.Link onClick={() => navigate(RoutesNames.LOGIN)}>Log in</Nav.Link>
                         )}

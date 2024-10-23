@@ -21,7 +21,7 @@ export default function EditUsers() {
     const [imageForCrop, setImageForCrop] = useState('');
     const [imageForServer, setImageForServer] = useState('');
     const cropperRef = useRef(null);
-
+    const [role, setRole] = useState('');
 
     const getUser = useCallback(async () => {
         showLoading();
@@ -69,6 +69,16 @@ export default function EditUsers() {
         hideLoading();
     }
 
+    useEffect(() => {
+      if (users.role) {
+          setRole(users.role); 
+      }
+    }, [users]);
+
+    const handleRoleChange = (e) => {
+        setRole(e.target.value); 
+    };
+
     function doSubmit(e) {
         e.preventDefault();
         setErrorMessage("");  
@@ -95,6 +105,7 @@ export default function EditUsers() {
             return;
         }
         
+      
         edit({
             firstName: results.get('firstName'),
             lastName: results.get('lastName'),
@@ -104,6 +115,7 @@ export default function EditUsers() {
             oib: results.get('oib'),
             licenseNumber: results.get('licenseNumber')
         });
+
     }
 
     function onCrop() {
@@ -199,13 +211,19 @@ export default function EditUsers() {
                         defaultValue="" 
                     />
                 </Form.Group>
-
+              
                 <Form.Group controlId="role">
-                    <Form.Label>Role</Form.Label>
-                    <Form.Control as="select" name='role' defaultValue={users.role} required>
-                        <option value="Admin">Admin</option>
-                        <option value="User">User</option>
-                    </Form.Control>
+                  <Form.Label>Role</Form.Label>
+                  <Form.Control 
+                      as="select" 
+                      name='role' 
+                      value={role} 
+                      onChange={handleRoleChange} 
+                      required
+                    >
+                      <option value="Admin">Admin</option>
+                      <option value="User">User</option>
+                  </Form.Control>
                 </Form.Group>
 
                 <Form.Group controlId="oib">

@@ -168,12 +168,12 @@ export default function AddFishings() {
 
         <Form.Group controlId="quantity">
           <Form.Label>Quantity</Form.Label>
-          <Form.Control type="text" name="quantity" required />
+          <Form.Control type="text" name="quantity" placeholder="Enter fish quantity"required />
         </Form.Group>
 
         <Form.Group controlId="weight">
           <Form.Label>Weight</Form.Label>
-          <Form.Control type="text" name="weight" required />
+          <Form.Control type="text" name="weight" placeholder="Enter the total weight of all fish" required />
         </Form.Group>
         <hr />
         <Row>

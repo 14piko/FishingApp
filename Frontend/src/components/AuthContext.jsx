@@ -16,6 +16,8 @@ export function AuthProvider({ children }) {
   const { showLoading, hideLoading } = useLoading();
   const { showError } = useError();
   const [currentUser, setCurrentUser] = useState(null);
+  const [currentUserFirstName, setCurrentUserFirstName] = useState(''); 
+  const [currentUserLastName, setCurrentUserLastName] = useState(''); 
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -26,6 +28,10 @@ export function AuthProvider({ children }) {
       setIsLoggedIn(true);
       const decodedToken = jwtDecode(token);
       const role = decodedToken.role;
+      const userFirstName = decodedToken.given_name;
+      const userLastName = decodedToken.nameid;
+      setCurrentUserFirstName(userFirstName);
+      setCurrentUserLastName(userLastName);
       setUserRole(role);
       setCurrentUser(decodedToken);
     } else {
@@ -46,6 +52,10 @@ export function AuthProvider({ children }) {
       const decodedToken = jwtDecode(token);
       const role = decodedToken.role;
       setUserRole(role);
+      const userFirstName = decodedToken.given_name;
+      const userLastName = decodedToken.nameid;
+      setCurrentUserFirstName(userFirstName);
+      setCurrentUserLastName(userLastName);
       setCurrentUser(decodedToken);
 
       navigate(RoutesNames.HOME);
@@ -70,7 +80,7 @@ export function AuthProvider({ children }) {
 
   function getCurrentUser() {
     return currentUser;
-}
+  }
 
   const value = {
     isLoggedIn,
@@ -79,6 +89,10 @@ export function AuthProvider({ children }) {
     currentUser,
     login,
     logout,
+    firstName: currentUserFirstName ? currentUserFirstName : '', 
+    lastName: currentUserLastName ? currentUserLastName : '',
   };
+
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

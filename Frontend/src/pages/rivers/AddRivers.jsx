@@ -45,6 +45,7 @@ export default function AddRiver() {
                     <Form.Control
                         type="text"
                         name="name"
+                        placeholder="Enter river name"
                         required
                     />
                 </Form.Group>

@@ -62,7 +62,7 @@ export default function AddFishes() {
             <Form onSubmit={doSubmit}>
                 <Form.Group controlId="name">
                     <Form.Label>Fish name</Form.Label>
-                    <Form.Control type="text" name="name" required />
+                    <Form.Control type="text" name="name" placeholder="Enter fish name" required  />
                 </Form.Group>
 
                 <Form.Group controlId="huntStart">
@@ -95,14 +95,14 @@ export default function AddFishes() {
 
                 <Form.Group controlId="description">
                     <Form.Label>Description</Form.Label>
-                    <Form.Control as="textarea" name="description" required />
+                    <Form.Control as="textarea" name="description" placeholder="Enter fish description..." required />
                 </Form.Group>
 
                 <hr />
                 <Row>
                     <Col xs={6} sm={6} md={3} lg={6} xl={6} xxl={6}>
                         <Link to={RoutesNames.FISH_VIEW} className="btn btn-danger width">
-                            Odustani
+                            Cancel
                         </Link>
                     </Col>
                     <Col xs={6} sm={6} md={9} lg={6} xl={6} xxl={6}>
