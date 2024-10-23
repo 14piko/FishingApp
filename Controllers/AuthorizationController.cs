@@ -60,7 +60,9 @@ namespace FishingApp.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, userBase.Email),
-                new Claim(ClaimTypes.Role, userBase.Role)
+                new Claim(ClaimTypes.Role, userBase.Role),
+                new Claim(ClaimTypes.GivenName, userBase.FirstName),
+                new Claim(ClaimTypes.NameIdentifier, userBase.LastName),
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor
