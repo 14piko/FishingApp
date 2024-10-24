@@ -191,8 +191,9 @@ export default function EditUsers() {
                         name="email"
                         required
                         defaultValue={users.email}
+                        disabled={users.email === 'admin@edunova.hr'}
                     />
-                </Form.Group>
+              </Form.Group>
 
                 <Form.Group controlId="password">
                     <Form.Label>Password</Form.Label>

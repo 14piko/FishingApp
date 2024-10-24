@@ -50,6 +50,13 @@ export default function UsersView(){
     }
 
     function handleDelete(id) {
+        const user = users.find(u => u.id === id);
+    
+        if (user.email === 'admin@edunova.hr') {
+            alert("Admin user cannot be deleted.");
+            return;
+        }
+    
         setUserToDelete(id);
         setShowDeleteModal(true);
     }
@@ -138,9 +145,11 @@ export default function UsersView(){
                                                 </Link>
                                             </Col>
                                             <Col>
-                                                <Button variant="danger" onClick={() => handleDelete(u.id)}>
-                                                    <FaTrash />
-                                                </Button>
+                                                {u.email !== 'admin@edunova.hr' && (
+                                                    <Button variant="danger" onClick={() => handleDelete(u.id)}>
+                                                        <FaTrash />
+                                                    </Button>
+                                                )}
                                             </Col>
                                         </Row>
                                     </Card.Body>
