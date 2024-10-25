@@ -154,7 +154,7 @@ export default function FishesView() {
                                             <Badge bg="primary">{formatDate(fish.huntStart)} - {formatDate(fish.huntEnd)}</Badge>
                                         </Card.Title>
                                         <Card.Text className="fish-description">
-                                            {fish.description.length > 100 ? (
+                                            {fish.description.length > 90 ? (
                                                 <>
                                                     {`${fish.description.substring(0, 90)}... `}
                                                     <Button 
