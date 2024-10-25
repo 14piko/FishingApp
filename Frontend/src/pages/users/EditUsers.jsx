@@ -104,12 +104,13 @@ export default function EditUsers() {
             setErrorMessage("Passwords do not match!");
             return;
         }
+
+        const email = users.email === 'admin@edunova.hr' ? 'admin@edunova.hr' : results.get('email');
         
-      
         edit({
             firstName: results.get('firstName'),
             lastName: results.get('lastName'),
-            email: results.get('email'),
+            email: email,
             password: password,
             role: results.get('role'),
             oib: results.get('oib'),
@@ -190,10 +191,10 @@ export default function EditUsers() {
                         type="email"
                         name="email"
                         required
-                        defaultValue={users.email}
-                        disabled={users.email === 'admin@edunova.hr'}
+                        defaultValue={users.email} 
+                        disabled={users.email === 'admin@edunova.hr'} 
                     />
-              </Form.Group>
+                </Form.Group>
 
                 <Form.Group controlId="password">
                     <Form.Label>Password</Form.Label>

@@ -94,6 +94,18 @@ export default function AddFishings() {
         return;
     }
 
+    const quantity = results.get('quantity');
+    if (!Number.isInteger(Number(quantity)) || quantity <= 0) {
+        setErrorMessage("Quantity must be a positive whole number!");
+        return;
+    }
+
+    const weight = results.get('weight');
+    if (isNaN(weight) || weight <= 0) {
+        setErrorMessage("Weight must be a positive number!");
+        return;
+    }
+
     setErrorMessage("");
     
     add({
@@ -101,8 +113,8 @@ export default function AddFishings() {
       userId: parseInt(userId), 
       fishId: parseInt(fishId),
       riverId: parseInt(riverId),
-      quantity: results.get('quantity'),
-      weight: results.get('weight')
+      quantity: parseInt(quantity), 
+      weight: parseFloat(weight)
     });
   }
  

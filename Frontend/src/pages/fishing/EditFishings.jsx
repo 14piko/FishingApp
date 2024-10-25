@@ -87,18 +87,30 @@ export default function EditFishings() {
 
   function doSubmit(e) {
     e.preventDefault();
-
+    
     const results = new FormData(e.target);
 
     if (!dateHunt) {
-      setErrorMessage("Please select hunt date!");
-      return;
+        setErrorMessage("Please select hunt date!");
+        return;
     }
 
-    const today = moment().startOf('day'); 
-    
-    if (moment(dateHunt).isAfter(today)) {
+    const originalDate = moment.utc(fishing.date).toDate();
+  
+    if (moment(dateHunt).isAfter(moment().startOf('day')) && !moment(dateHunt).isSame(originalDate, 'day')) {
         setErrorMessage("Hunt date cannot be in the future!");
+        return;
+    }
+
+    const quantity = results.get('quantity');
+    if (!Number.isInteger(Number(quantity)) || quantity <= 0) {
+        setErrorMessage("Quantity must be a positive whole number!");
+        return;
+    }
+
+    const weight = results.get('weight');
+    if (isNaN(weight) || weight <= 0) {
+        setErrorMessage("Weight must be a positive number!");
         return;
     }
 
@@ -109,8 +121,8 @@ export default function EditFishings() {
       userId: parseInt(userId),
       fishId: parseInt(fishId),
       riverId: parseInt(riverId),
-      quantity: results.get('quantity'),
-      weight: results.get('weight')
+      quantity: parseInt(quantity), 
+      weight: parseFloat(weight)
     });
   }
 
