@@ -153,7 +153,7 @@ export default function FishesView() {
                                             <span className="text-info fs-4">{fish.name}</span>
                                             <Badge bg="primary">{formatDate(fish.huntStart)} - {formatDate(fish.huntEnd)}</Badge>
                                         </Card.Title>
-                                        <Card.Text className="fish-description">
+                                        <Card.Text>
                                             {fish.description.length > 90 ? (
                                                 <>
                                                     {`${fish.description.substring(0, 90)}... `}
